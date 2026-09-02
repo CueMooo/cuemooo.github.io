@@ -1,0 +1,139 @@
+:root {
+  --bg: #0b0d10;
+  --panel: #14181e;
+  --metal: #1c232c;
+  --line: #2a3340;
+  --gold: #e8b84a;
+  --gold-dim: #9a7420;
+  --paper: #e8e2d4;
+  --muted: #8b95a3;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { min-height: 100%; }
+body {
+  font-family: "Outfit", system-ui, sans-serif;
+  background:
+    radial-gradient(1200px 500px at 10% -10%, #1a2210 0%, transparent 50%),
+    radial-gradient(900px 400px at 100% 0%, #1a1510 0%, transparent 45%),
+    var(--bg);
+  color: var(--paper);
+  padding: 32px 20px 80px;
+}
+
+.noise {
+  pointer-events: none;
+  position: fixed;
+  inset: 0;
+  opacity: 0.05;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  z-index: 0;
+}
+
+.top, .toolbar, .grid, .how, footer { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
+
+.brand { display: flex; gap: 16px; align-items: center; }
+.bolt {
+  font-size: 42px;
+  color: var(--gold);
+  line-height: 1;
+  text-shadow: 0 0 18px rgba(232,184,74,.35);
+}
+.kicker {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--gold-dim);
+}
+h1 {
+  font-family: "Bebas Neue", sans-serif;
+  font-size: clamp(48px, 8vw, 84px);
+  letter-spacing: 0.06em;
+  line-height: 0.85;
+}
+.tag { margin-top: 14px; color: var(--muted); max-width: 560px; }
+code {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.86em;
+  background: var(--metal);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--gold);
+}
+
+.toolbar { display: flex; flex-wrap: wrap; gap: 12px; margin: 36px auto 22px; align-items: center; }
+#search {
+  flex: 1;
+  min-width: 220px;
+  background: var(--panel);
+  border: 1px solid var(--line);
+  color: var(--paper);
+  padding: 12px 14px;
+  border-radius: 10px;
+  font: inherit;
+  outline: none;
+}
+#search:focus { border-color: var(--gold); }
+.filters { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  background: var(--metal);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  padding: 8px 12px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+.chip.on, .chip:hover { color: var(--bg); background: var(--gold); border-color: var(--gold); }
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 16px;
+}
+
+.card {
+  background: linear-gradient(180deg, #1a2028 0%, #12161c 100%);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 18px;
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  min-height: 210px;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.04), 0 10px 30px rgba(0,0,0,.25);
+  transition: transform .15s ease, border-color .15s ease;
+}
+.card:hover { transform: translateY(-4px); border-color: var(--gold-dim); }
+.emoji { font-size: 34px; margin-bottom: 10px; }
+.card h3 { font-size: 20px; margin-bottom: 6px; }
+.card p { color: var(--muted); font-size: 14px; flex: 1; }
+.meta {
+  margin-top: 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--gold);
+}
+.play {
+  background: var(--gold);
+  color: #111;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-weight: 700;
+}
+
+.how { margin-top: 56px; background: var(--panel); border: 1px dashed var(--line); border-radius: 16px; padding: 24px; }
+.how h2 { font-family: "Bebas Neue", sans-serif; letter-spacing: .06em; font-size: 32px; margin-bottom: 12px; }
+.how ol { padding-left: 20px; color: var(--muted); display: grid; gap: 8px; }
+.fine { margin-top: 14px; color: var(--muted); font-size: 13px; }
+footer { margin-top: 40px; color: #5d6774; font-size: 13px; }
+.empty { grid-column: 1 / -1; color: var(--muted); padding: 40px 0; text-align: center; }
