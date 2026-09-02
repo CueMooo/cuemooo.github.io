@@ -1,0 +1,10 @@
+[
+  {
+    "id": "slope",
+    "name": "Slope",
+    "file": "games/slope/index.html",
+    "category": "arcade",
+    "emoji": "🟢",
+    "blurb": "Don't fall off."
+  }
+]
