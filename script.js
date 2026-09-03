@@ -1,16 +1,120 @@
-// CueMoo's Games - loads games from games.json
+const THEMES = [
+  { id: "hot-pink", name: "Hot Pink", color: "#ff4da6" },
+  { id: "soft-pink", name: "Soft Pink", color: "#ff8ec8" },
+  { id: "red", name: "Red", color: "#ff3b3b" },
+  { id: "orange", name: "Orange", color: "#ff7a1a" },
+  { id: "yellow", name: "Yellow", color: "#f5c518" },
+  { id: "green", name: "Green", color: "#22c55e" },
+  { id: "blue", name: "Blue", color: "#3b82f6" },
+  { id: "purple", name: "Purple", color: "#a855f7" }
+];
+
+const DEFAULTS = {
+  theme: "hot-pink",
+  card: "normal",
+  desc: true,
+  newtab: false,
+  motion: false
+};
 
 let allGames = [];
+let settings = loadSettings();
 
 document.querySelectorAll(".nav-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".nav-btn").forEach((b) => b.classList.remove("active"));
     document.querySelectorAll(".tab-content").forEach((t) => t.classList.remove("active"));
-
     btn.classList.add("active");
     document.getElementById(btn.dataset.tab).classList.add("active");
   });
 });
+
+function loadSettings() {
+  try {
+    return { ...DEFAULTS, ...JSON.parse(localStorage.getItem("cuemoo-settings") || "{}") };
+  } catch {
+    return { ...DEFAULTS };
+  }
+}
+
+function saveSettings() {
+  localStorage.setItem("cuemoo-settings", JSON.stringify(settings));
+}
+
+function applySettings() {
+  document.documentElement.dataset.theme = settings.theme;
+  document.documentElement.dataset.card = settings.card;
+  document.documentElement.dataset.desc = settings.desc ? "on" : "off";
+  document.documentElement.dataset.motion = settings.motion ? "off" : "on";
+  saveSettings();
+  if (allGames.length) renderGames(currentFiltered());
+}
+
+function renderThemes() {
+  const grid = document.getElementById("theme-grid");
+  grid.innerHTML = "";
+  THEMES.forEach((theme) => {
+    const btn = document.createElement("button");
+    btn.type = "button";
+    btn.className = "theme-btn" + (settings.theme === theme.id ? " active" : "");
+    btn.innerHTML = `
+      <span class="theme-circle" style="--swatch:${theme.color}"></span>
+      <span>${theme.name}</span>
+    `;
+    btn.addEventListener("click", () => {
+      settings.theme = theme.id;
+      applySettings();
+      renderThemes();
+    });
+    grid.appendChild(btn);
+  });
+}
+
+function wireSettings() {
+  document.querySelectorAll("#card-size .chip").forEach((chip) => {
+    chip.classList.toggle("active", chip.dataset.size === settings.card);
+    chip.addEventListener("click", () => {
+      settings.card = chip.dataset.size;
+      document.querySelectorAll("#card-size .chip").forEach((c) => {
+        c.classList.toggle("active", c.dataset.size === settings.card);
+      });
+      applySettings();
+    });
+  });
+
+  const desc = document.getElementById("toggle-desc");
+  const newtab = document.getElementById("toggle-newtab");
+  const motion = document.getElementById("toggle-motion");
+
+  desc.checked = settings.desc;
+  newtab.checked = settings.newtab;
+  motion.checked = settings.motion;
+
+  desc.addEventListener("change", () => {
+    settings.desc = desc.checked;
+    applySettings();
+  });
+  newtab.addEventListener("change", () => {
+    settings.newtab = newtab.checked;
+    applySettings();
+  });
+  motion.addEventListener("change", () => {
+    settings.motion = motion.checked;
+    applySettings();
+  });
+
+  document.getElementById("reset-settings").addEventListener("click", () => {
+    settings = { ...DEFAULTS };
+    desc.checked = settings.desc;
+    newtab.checked = settings.newtab;
+    motion.checked = settings.motion;
+    document.querySelectorAll("#card-size .chip").forEach((c) => {
+      c.classList.toggle("active", c.dataset.size === settings.card);
+    });
+    applySettings();
+    renderThemes();
+  });
+}
 
 async function loadGames() {
   try {
@@ -29,7 +133,6 @@ async function loadGames() {
 function populateCategories() {
   const select = document.getElementById("category-filter");
   const categories = [...new Set(allGames.map((g) => g.category).filter(Boolean))].sort();
-
   categories.forEach((cat) => {
     const opt = document.createElement("option");
     opt.value = cat;
@@ -54,17 +157,13 @@ function isImagePath(value) {
 }
 
 function initials(name) {
-  const parts = String(name || "Game")
-    .trim()
-    .split(/\s+/)
-    .slice(0, 2);
+  const parts = String(name || "Game").trim().split(/\s+/).slice(0, 2);
   return parts.map((p) => p[0]).join("").toUpperCase();
 }
 
 function renderGames(games) {
   const grid = document.getElementById("games-grid");
   const noResults = document.getElementById("no-results");
-
   grid.innerHTML = "";
 
   if (games.length === 0) {
@@ -80,8 +179,7 @@ function renderGames(games) {
 
     let thumbHTML;
     if (isImagePath(game.thumbnail)) {
-      const src = game.thumbnail;
-      thumbHTML = `<img src="${src}" alt="${escapeHTML(game.name)}" loading="lazy">`;
+      thumbHTML = `<img src="${game.thumbnail}" alt="${escapeHTML(game.name)}" loading="lazy">`;
     } else {
       thumbHTML = `<span class="thumb-fallback">${escapeHTML(initials(game.name))}</span>`;
     }
@@ -90,16 +188,18 @@ function renderGames(games) {
       ? `<a class="source-link" href="${game.source}" target="_blank" rel="noopener">Source</a>`
       : "";
 
+    const target = settings.newtab ? ` target="_blank" rel="noopener"` : "";
+
     card.innerHTML = `
       <div class="game-thumb">${thumbHTML}</div>
       <div class="game-body">
         <h3>${escapeHTML(game.name)}</h3>
         <p>${escapeHTML(game.description || "")}</p>
         <div class="game-meta">
-          <span class="category-tag">${escapeHTML(game.category || "Uncategorized")}</span>
+          <span class="category-tag">${escapeHTML(game.category || "Misc")}</span>
           ${sourceLink}
         </div>
-        <a class="play-btn" href="${game.url}">Play</a>
+        <a class="play-btn" href="${game.url}"${target}>Play</a>
       </div>
     `;
 
@@ -113,26 +213,28 @@ function escapeHTML(str) {
   return div.innerHTML;
 }
 
-function applyFilters() {
+function currentFiltered() {
   const query = document.getElementById("search").value.toLowerCase().trim();
   const category = document.getElementById("category-filter").value;
-
-  const filtered = allGames.filter((game) => {
+  return allGames.filter((game) => {
     const matchesSearch =
       !query ||
       game.name.toLowerCase().includes(query) ||
       (game.description || "").toLowerCase().includes(query) ||
       (game.category || "").toLowerCase().includes(query);
-
     const matchesCategory = category === "all" || game.category === category;
-
     return matchesSearch && matchesCategory;
   });
+}
 
-  renderGames(filtered);
+function applyFilters() {
+  renderGames(currentFiltered());
 }
 
 document.getElementById("search").addEventListener("input", applyFilters);
 document.getElementById("category-filter").addEventListener("change", applyFilters);
 
+applySettings();
+renderThemes();
+wireSettings();
 loadGames();
