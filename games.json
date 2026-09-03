@@ -3,32 +3,16 @@
     "id": "snake",
     "name": "Snake",
     "description": "Classic snake. Eat food, grow longer, don't hit the walls.",
-    "category": "Arcade",
-    "url": "./games/snake/index.html",
-    "thumbnail": "🐍"
+    "category": "Classic",
+    "url": "games/snake/index.html",
+    "thumbnail": "thumbs/snake.png"
   },
   {
     "id": "tic-tac-toe",
     "name": "Tic Tac Toe",
     "description": "Classic X and O. Play against a friend on the same device.",
-    "category": "Puzzle",
-    "url": "./games/tic-tac-toe/index.html",
-    "thumbnail": "❌"
-  },
-  {
-    "id": "memory",
-    "name": "Memory Match",
-    "description": "Flip cards and find matching pairs. Test your memory.",
-    "category": "Puzzle",
-    "url": "./games/memory/index.html",
-    "thumbnail": "🧠"
-  },
-  {
-    "id": "clicker",
-    "name": "Clicker",
-    "description": "Simple clicker game. How fast can you click?",
-    "category": "Casual",
-    "url": "./games/clicker/index.html",
-    "thumbnail": "👆"
+    "category": "Strategy",
+    "url": "games/tic-tac-toe/index.html",
+    "thumbnail": "thumbs/tic-tac-toe.png"
   }
 ]
