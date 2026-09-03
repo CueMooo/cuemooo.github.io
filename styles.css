@@ -34,7 +34,6 @@ body {
   padding: 0 20px;
 }
 
-/* Header */
 header {
   background: var(--surface);
   border-bottom: 1px solid var(--border);
@@ -83,7 +82,6 @@ nav {
   background: var(--accent);
 }
 
-/* Main */
 main {
   flex: 1;
   padding: 28px 20px 40px;
@@ -97,7 +95,6 @@ main {
   display: block;
 }
 
-/* Controls */
 .controls {
   display: flex;
   gap: 12px;
@@ -135,14 +132,13 @@ main {
   font-size: 0.95rem;
   cursor: pointer;
   outline: none;
-  min-width: 160px;
+  min-width: 180px;
 }
 
 #category-filter:focus {
   border-color: var(--accent);
 }
 
-/* Games Grid */
 .games-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
@@ -166,12 +162,12 @@ main {
 }
 
 .game-thumb {
-  height: 140px;
+  height: 160px;
   background: var(--surface-2);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 3.5rem;
+  overflow: hidden;
   user-select: none;
 }
 
@@ -179,6 +175,15 @@ main {
   width: 100%;
   height: 100%;
   object-fit: cover;
+  display: block;
+}
+
+.game-thumb .thumb-fallback {
+  font-size: 1.6rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  opacity: 0.7;
 }
 
 .game-body {
@@ -222,7 +227,7 @@ main {
 .play-btn {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  justify-content: center;
   background: var(--accent);
   color: white;
   text-decoration: none;
@@ -258,7 +263,6 @@ main {
   display: none;
 }
 
-/* About */
 .about-card {
   background: var(--surface);
   border: 1px solid var(--border);
@@ -309,7 +313,6 @@ main {
   margin-bottom: 6px;
 }
 
-/* Footer */
 footer {
   border-top: 1px solid var(--border);
   padding: 18px 0;
@@ -324,7 +327,6 @@ footer code {
   border-radius: 4px;
 }
 
-/* Responsive */
 @media (max-width: 600px) {
   .header-content {
     height: 56px;
