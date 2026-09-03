@@ -1,8 +1,7 @@
-// Game Hub - loads games from games.json
+// CueMoo's Games - loads games from games.json
 
 let allGames = [];
 
-// Tab switching
 document.querySelectorAll(".nav-btn").forEach((btn) => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".nav-btn").forEach((b) => b.classList.remove("active"));
@@ -13,7 +12,6 @@ document.querySelectorAll(".nav-btn").forEach((btn) => {
   });
 });
 
-// Load games
 async function loadGames() {
   try {
     const res = await fetch("games.json");
@@ -40,6 +38,29 @@ function populateCategories() {
   });
 }
 
+function isImagePath(value) {
+  if (!value || typeof value !== "string") return false;
+  const v = value.trim();
+  if (
+    v.startsWith("http://") ||
+    v.startsWith("https://") ||
+    v.startsWith("./") ||
+    v.startsWith("/") ||
+    v.startsWith("thumbs/")
+  ) {
+    return true;
+  }
+  return /\.(png|jpe?g|webp|gif|svg)$/i.test(v);
+}
+
+function initials(name) {
+  const parts = String(name || "Game")
+    .trim()
+    .split(/\s+/)
+    .slice(0, 2);
+  return parts.map((p) => p[0]).join("").toUpperCase();
+}
+
 function renderGames(games) {
   const grid = document.getElementById("games-grid");
   const noResults = document.getElementById("no-results");
@@ -57,13 +78,12 @@ function renderGames(games) {
     const card = document.createElement("article");
     card.className = "game-card";
 
-    // Thumbnail: use image if provided, otherwise emoji/fallback
     let thumbHTML;
-    if (game.thumbnail && (game.thumbnail.startsWith("http") || game.thumbnail.startsWith("./") || game.thumbnail.startsWith("/"))) {
-      thumbHTML = `<img src="${game.thumbnail}" alt="${game.name}" loading="lazy">`;
+    if (isImagePath(game.thumbnail)) {
+      const src = game.thumbnail;
+      thumbHTML = `<img src="${src}" alt="${escapeHTML(game.name)}" loading="lazy">`;
     } else {
-      const emoji = game.thumbnail || "🎮";
-      thumbHTML = emoji;
+      thumbHTML = `<span class="thumb-fallback">${escapeHTML(initials(game.name))}</span>`;
     }
 
     const sourceLink = game.source
@@ -76,12 +96,10 @@ function renderGames(games) {
         <h3>${escapeHTML(game.name)}</h3>
         <p>${escapeHTML(game.description || "")}</p>
         <div class="game-meta">
-          <span class="category-tag">${escapeHTML(game.category || "Other")}</span>
+          <span class="category-tag">${escapeHTML(game.category || "Uncategorized")}</span>
           ${sourceLink}
         </div>
-        <a class="play-btn" href="${game.url}">
-          Play →
-        </a>
+        <a class="play-btn" href="${game.url}">Play</a>
       </div>
     `;
 
@@ -95,7 +113,6 @@ function escapeHTML(str) {
   return div.innerHTML;
 }
 
-// Search + filter
 function applyFilters() {
   const query = document.getElementById("search").value.toLowerCase().trim();
   const category = document.getElementById("category-filter").value;
@@ -118,5 +135,4 @@ function applyFilters() {
 document.getElementById("search").addEventListener("input", applyFilters);
 document.getElementById("category-filter").addEventListener("change", applyFilters);
 
-// Init
 loadGames();
