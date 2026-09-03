@@ -1,19 +1,20 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="hot-pink">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CueMoo's Games</title>
+  <title>CueMoos Games</title>
   <link rel="stylesheet" href="styles.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%236c5ce7'/><text x='50' y='68' text-anchor='middle' font-size='52' font-family='system-ui,sans-serif' font-weight='700' fill='white'>C</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23ff4da6'/><text x='50' y='68' text-anchor='middle' font-size='52' font-family='system-ui,sans-serif' font-weight='700' fill='white'>C</text></svg>">
 </head>
 <body>
   <header>
     <div class="container header-content">
-      <h1 class="logo">CueMoo's Games</h1>
+      <h1 class="logo">CueMoos Games</h1>
       <nav>
         <button class="nav-btn active" data-tab="games">Games</button>
         <button class="nav-btn" data-tab="about">About</button>
+        <button class="nav-btn" data-tab="settings">Settings</button>
       </nav>
     </div>
   </header>
@@ -32,21 +33,69 @@
 
     <section id="about" class="tab-content">
       <div class="about-card">
-        <!-- Edit everything inside this card. This is your page. -->
         <h2>About CueMoo</h2>
-        <p>Hey, I'm Devin. This is CueMoo's Games — a small personal collection of games I keep in one place so they're easy to open, share, and add to.</p>
-        <p>Nothing fancy. Just games I like building or playing, hosted locally under <code>/games/</code>.</p>
-        <h3>What you'll find here</h3>
-        <p>Classic stuff, strategy games, memory challenges, and idle clickers. I'll keep adding more as I make them.</p>
-        <h3>Where I'm at</h3>
-        <p>Mayetta, Kansas.</p>
+        <p>Hey Im Devin from Winchester Kansas.</p>
+        <p>This is CueMoos Games. I put my games here so I can open them and share them.</p>
+      </div>
+    </section>
+
+    <section id="settings" class="tab-content">
+      <div class="settings-card">
+        <h2>Settings</h2>
+
+        <div class="setting-block">
+          <h3>Themes</h3>
+          <p class="setting-help">Primary color on black. Tap a circle to switch.</p>
+          <div id="theme-grid" class="theme-grid"></div>
+        </div>
+
+        <div class="setting-block">
+          <h3>Layout</h3>
+          <div class="setting-row">
+            <span>Card size</span>
+            <div class="chip-row" id="card-size">
+              <button class="chip" data-size="cozy">Cozy</button>
+              <button class="chip active" data-size="normal">Normal</button>
+              <button class="chip" data-size="compact">Compact</button>
+            </div>
+          </div>
+          <div class="setting-row">
+            <span>Show game descriptions</span>
+            <label class="switch">
+              <input type="checkbox" id="toggle-desc" checked>
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="setting-block">
+          <h3>Play</h3>
+          <div class="setting-row">
+            <span>Open games in a new tab</span>
+            <label class="switch">
+              <input type="checkbox" id="toggle-newtab">
+              <span class="slider"></span>
+            </label>
+          </div>
+          <div class="setting-row">
+            <span>Less motion</span>
+            <label class="switch">
+              <input type="checkbox" id="toggle-motion">
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <div class="setting-block">
+          <button type="button" id="reset-settings" class="reset-btn">Reset settings</button>
+        </div>
       </div>
     </section>
   </main>
 
   <footer>
     <div class="container">
-      <p>CueMoo's Games</p>
+      <p>CueMoos Games</p>
     </div>
   </footer>
   <script src="script.js"></script>
