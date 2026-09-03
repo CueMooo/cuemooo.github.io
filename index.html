@@ -1,45 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>THE LOCKER</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=IBM+Plex+Mono:wght@400;600&family=Outfit:wght@400;600&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Hub</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎮</text></svg>">
 </head>
 <body>
-  <div class="noise"></div>
-  <div class="rivets"></div>
-
-  <header class="top">
-    <div class="lock" aria-hidden="true">
-      <div class="dial">
-        <span>24</span>
-        <b></b>
-        <span>08</span>
-      </div>
-    </div>
-    <div>
-      <p class="kicker">Combination unknown</p>
-      <h1>THE LOCKER</h1>
-      <p class="tag">Devin’s private stack of games. Crack a door.</p>
+  <header>
+    <div class="container header-content">
+      <h1 class="logo">🎮 Game Hub</h1>
+      <nav>
+        <button class="nav-btn active" data-tab="games">Games</button>
+        <button class="nav-btn" data-tab="about">About</button>
+      </nav>
     </div>
   </header>
 
-  <section class="toolbar">
-    <input id="search" type="search" placeholder="Search games…" autocomplete="off" />
-    <div class="filters" id="filters"></div>
-  </section>
+  <main class="container">
+    <section id="games" class="tab-content active">
+      <div class="controls">
+        <input type="text" id="search" placeholder="Search games..." autocomplete="off">
+        <select id="category-filter">
+          <option value="all">All Categories</option>
+        </select>
+      </div>
+      <div id="games-grid" class="games-grid"></div>
+      <p id="no-results" class="no-results hidden">No games found.</p>
+    </section>
 
-  <main id="grid" class="grid"></main>
+    <section id="about" class="tab-content">
+      <div class="about-card">
+        <h2>About This Site</h2>
+        <p>Simple static Game Hub. All games are local under <code>/games/</code>.</p>
+        <p>To add a game: create <code>games/yourgame/index.html</code> then add it to <code>games.json</code>.</p>
+      </div>
+    </section>
+  </main>
 
   <footer>
-    <span>№ 247</span>
-    <span>property of slifer</span>
-    <span>do not slam</span>
-  </footer>
-  <script src="script.js"></script>
-</body>
-</html>
+    <div class="container">
+      <p>Edit <code>games.json</code> to 
