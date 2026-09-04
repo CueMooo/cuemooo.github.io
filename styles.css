@@ -77,7 +77,7 @@ nav { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
 .nav-btn:hover { color: var(--text); background: var(--surface-2); }
 .nav-btn.active { color: #fff; background: var(--primary); }
 
-main { flex: 1; padding: 28px 20px 40px; }
+main { flex: 1; padding: 48px 20px 80px; }
 .tab-content { display: none; }
 .tab-content.active { display: block; }
 
