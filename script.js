@@ -11,7 +11,7 @@ const THEMES = [
 
 const DEFAULTS = {
   theme: "hot-pink",
-  card: "normal",
+  card: "compact",
   desc: true,
   newtab: false,
   motion: false
