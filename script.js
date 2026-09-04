@@ -1,6 +1,6 @@
 const THEMES = [
+  { id: "rose-pink", name: "Rose Pink", color: "#e56b92" },
   { id: "hot-pink", name: "Hot Pink", color: "#ff4da6" },
-  { id: "soft-pink", name: "Soft Pink", color: "#ff8ec8" },
   { id: "red", name: "Red", color: "#ff3b3b" },
   { id: "orange", name: "Orange", color: "#ff7a1a" },
   { id: "yellow", name: "Yellow", color: "#f5c518" },
@@ -10,7 +10,7 @@ const THEMES = [
 ];
 
 const DEFAULTS = {
-  theme: "hot-pink",
+  theme: "rose-pink",
   card: "compact",
   desc: true,
   newtab: false,
@@ -31,8 +31,11 @@ document.querySelectorAll(".nav-btn").forEach((btn) => {
 
 function loadSettings() {
   try {
-    return { ...DEFAULTS, ...JSON.parse(localStorage.getItem("cuemoo-settings") || "{}") };
-  } catch {
+    const saved = { ...DEFAULTS, ...JSON.parse(localStorage.getItem("cuemoo-settings") || "{}") };
+    if (saved.theme === "soft-pink") saved.theme = "rose-pink";
+    if (!THEMES.some((t) => t.id === saved.theme)) saved.theme = DEFAULTS.theme;
+    return saved;
+  } catch (e) {
     return { ...DEFAULTS };
   }
 }
@@ -42,10 +45,10 @@ function saveSettings() {
 }
 
 function applySettings() {
-  document.documentElement.dataset.theme = settings.theme;
-  document.documentElement.dataset.card = settings.card;
-  document.documentElement.dataset.desc = settings.desc ? "on" : "off";
-  document.documentElement.dataset.motion = settings.motion ? "off" : "on";
+  document.documentElement.setAttribute("data-theme", settings.theme);
+  document.documentElement.setAttribute("data-card", settings.card);
+  document.documentElement.setAttribute("data-desc", settings.desc ? "on" : "off");
+  document.documentElement.setAttribute("data-motion", settings.motion ? "off" : "on");
   saveSettings();
   if (allGames.length) renderGames(currentFiltered());
 }
@@ -57,11 +60,14 @@ function renderThemes() {
     const btn = document.createElement("button");
     btn.type = "button";
     btn.className = "theme-btn" + (settings.theme === theme.id ? " active" : "");
-    btn.innerHTML = `
-      <span class="theme-circle" style="--swatch:${theme.color}"></span>
-      <span>${theme.name}</span>
-    `;
-    btn.addEventListener("click", () => {
+    const circle = document.createElement("span");
+    circle.className = "theme-circle";
+    circle.style.background = "linear-gradient(90deg, " + theme.color + " 50%, #000 50%)";
+    const label = document.createElement("span");
+    label.textContent = theme.name;
+    btn.appendChild(circle);
+    btn.appendChild(label);
+    btn.addEventListener("click", function () {
       settings.theme = theme.id;
       applySettings();
       renderThemes();
@@ -126,7 +132,7 @@ async function loadGames() {
   } catch (err) {
     console.error(err);
     document.getElementById("games-grid").innerHTML =
-      `<p class="no-results">Could not load games.json. Make sure the file exists next to index.html.</p>`;
+      '<p class="no-results">Could not load games.json. Make sure the file exists next to index.html.</p>';
   }
 }
 
@@ -179,29 +185,28 @@ function renderGames(games) {
 
     let thumbHTML;
     if (isImagePath(game.thumbnail)) {
-      thumbHTML = `<img src="${game.thumbnail}" alt="${escapeHTML(game.name)}" loading="lazy">`;
+      thumbHTML = '<img src="' + game.thumbnail + '" alt="' + escapeHTML(game.name) + '" loading="lazy">';
     } else {
-      thumbHTML = `<span class="thumb-fallback">${escapeHTML(initials(game.name))}</span>`;
+      thumbHTML = '<span class="thumb-fallback">' + escapeHTML(initials(game.name)) + "</span>";
     }
 
     const sourceLink = game.source
-      ? `<a class="source-link" href="${game.source}" target="_blank" rel="noopener">Source</a>`
+      ? '<a class="source-link" href="' + game.source + '" target="_blank" rel="noopener">Source</a>'
       : "";
 
-    const target = settings.newtab ? ` target="_blank" rel="noopener"` : "";
+    const target = settings.newtab ? ' target="_blank" rel="noopener"' : "";
 
-    card.innerHTML = `
-      <div class="game-thumb">${thumbHTML}</div>
-      <div class="game-body">
-        <h3>${escapeHTML(game.name)}</h3>
-        <p>${escapeHTML(game.description || "")}</p>
-        <div class="game-meta">
-          <span class="category-tag">${escapeHTML(game.category || "Misc")}</span>
-          ${sourceLink}
-        </div>
-        <a class="play-btn" href="${game.url}"${target}>Play</a>
-      </div>
-    `;
+    card.innerHTML =
+      '<div class="game-thumb">' + thumbHTML + "</div>" +
+      '<div class="game-body">' +
+        "<h3>" + escapeHTML(game.name) + "</h3>" +
+        "<p>" + escapeHTML(game.description || "") + "</p>" +
+        '<div class="game-meta">' +
+          '<span class="category-tag">' + escapeHTML(game.category || "Misc") + "</span>" +
+          sourceLink +
+        "</div>" +
+        '<a class="play-btn" href="' + game.url + '"' + target + ">Play</a>" +
+      "</div>";
 
     grid.appendChild(card);
   });
