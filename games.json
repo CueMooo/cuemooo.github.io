@@ -1,34 +1,82 @@
 [
   {
-    "id": "retro-bowl",
+    "id": "retrobowl",
     "name": "Retro Bowl",
     "description": "Run your football team and win the big game.",
     "category": "Sports",
-    "url": "games/retro-bowl/index.html",
-    "thumbnail": "thumbs/retro-bowl.png"
+    "url": "games/retrobowl/index.html",
+    "thumbnail": "thumbs/retrobowl.png"
   },
   {
-    "id": "eggy-car",
+    "id": "basketballlegends",
+    "name": "Basketball Legends",
+    "description": "1v1 basketball with crazy dunks and special moves.",
+    "category": "Sports",
+    "url": "games/basketballlegends/index.html",
+    "thumbnail": "thumbs/basketballlegends.png"
+  },
+  {
+    "id": "eggycar",
     "name": "Eggy Car",
     "description": "Drive the car and keep the egg from falling.",
     "category": "Driving",
-    "url": "games/eggy-car/index.html",
-    "thumbnail": "thumbs/eggy-car.png"
+    "url": "games/eggycar/index.html",
+    "thumbnail": "thumbs/eggycar.png"
   },
   {
-    "id": "memory",
-    "name": "Memory Match",
-    "description": "Flip cards and find the pairs.",
-    "category": "Puzzle",
-    "url": "games/memory/index.html",
-    "thumbnail": "thumbs/memory.png"
+    "id": "subwaysurfers",
+    "name": "Subway Surfers",
+    "description": "Run through the subway and dodge the trains.",
+    "category": "Arcade",
+    "url": "games/subwaysurfers/index.html",
+    "thumbnail": "thumbs/subwaysurfers.png"
   },
   {
-    "id": "clicker",
-    "name": "Clicker",
-    "description": "Tap as fast as you can.",
+    "id": "crossyroad",
+    "name": "Crossy Road",
+    "description": "Cross the roads and rivers without getting hit.",
+    "category": "Arcade",
+    "url": "games/crossyroad/index.html",
+    "thumbnail": "thumbs/crossyroad.png"
+  },
+  {
+    "id": "flappybird",
+    "name": "Flappy Bird",
+    "description": "Tap to fly and dont hit the pipes.",
+    "category": "Arcade",
+    "url": "games/flappybird/index.html",
+    "thumbnail": "thumbs/flappybird.png"
+  },
+  {
+    "id": "stickmanhook",
+    "name": "Stickman Hook",
+    "description": "Swing through levels with the grappling hook.",
+    "category": "Action",
+    "url": "games/stickmanhook/index.html",
+    "thumbnail": "thumbs/stickmanhook.png"
+  },
+  {
+    "id": "bitlife",
+    "name": "BitLife",
+    "description": "Live a virtual life and make choices.",
+    "category": "Simulation",
+    "url": "games/bitlife/index.html",
+    "thumbnail": "thumbs/bitlife.png"
+  },
+  {
+    "id": "cookieclicker",
+    "name": "Cookie Clicker",
+    "description": "Click cookies and build your bakery empire.",
     "category": "Idle",
-    "url": "games/clicker/index.html",
-    "thumbnail": "thumbs/clicker.png"
+    "url": "games/cookieclicker/index.html",
+    "thumbnail": "thumbs/cookieclicker.png"
+  },
+  {
+    "id": "clickerheroes",
+    "name": "Clicker Heroes",
+    "description": "Click monsters hire heroes and get stronger.",
+    "category": "Idle",
+    "url": "games/clickerheroes/index.html",
+    "thumbnail": "thumbs/clickerheroes.png"
   }
 ]
