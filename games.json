@@ -5,7 +5,7 @@
     "description": "Run your football team and win the game.",
     "category": "Sports",
     "url": "games/retrobowl/index.html",
-    "thumbnail": "thumbs/retrobowl.png"
+    "thumbnail": "thumbs/img/icon.jpg"
   },
   {
     "id": "basketballlegends",
@@ -28,8 +28,16 @@
     "name": "Subway Surfers",
     "description": "Run through the subway and dodge the trains.",
     "category": "Arcade",
-    "url": "games/subwaysurfers/index.html",
+    "url": "games/subwaysurfersny/index.html",
     "thumbnail": "thumbs/subwaysurfers.png"
+  },
+    {
+    "id": "motox3m",
+    "name": "Moto X3M",
+    "description": "Drive through maps and dodge obstacles.",
+    "category": "Arcade",
+    "url": "games/motox3m/index.html",
+    "thumbnail": "thumbs/motox3m.png"
   },
   {
     "id": "stickmanhook",
@@ -46,6 +54,14 @@
     "category": "Simulation",
     "url": "games/bitlife/index.html",
     "thumbnail": "thumbs/bitlife.png"
+  },
+    {
+    "id": "tinyfishing",
+    "name": "Tiny Fishing",
+    "description": "Live a virtual fishing life.",
+    "category": "Simulation",
+    "url": "games/tinyfishing/index.html",
+    "thumbnail": "thumbs/tinyfishing.png"
   },
   {
     "id": "cookieclicker",
