@@ -2,7 +2,7 @@
   {
     "id": "retrobowl",
     "name": "Retro Bowl",
-    "description": "Run your football team and win the big game.",
+    "description": "Run your football team and win the game.",
     "category": "Sports",
     "url": "games/retrobowl/index.html",
     "thumbnail": "thumbs/retrobowl.png"
@@ -30,22 +30,6 @@
     "category": "Arcade",
     "url": "games/subwaysurfers/index.html",
     "thumbnail": "thumbs/subwaysurfers.png"
-  },
-  {
-    "id": "crossyroad",
-    "name": "Crossy Road",
-    "description": "Cross the roads and rivers without getting hit.",
-    "category": "Arcade",
-    "url": "games/crossyroad/index.html",
-    "thumbnail": "thumbs/crossyroad.png"
-  },
-  {
-    "id": "flappybird",
-    "name": "Flappy Bird",
-    "description": "Tap to fly and dont hit the pipes.",
-    "category": "Arcade",
-    "url": "games/flappybird/index.html",
-    "thumbnail": "thumbs/flappybird.png"
   },
   {
     "id": "stickmanhook",
