@@ -1,0 +1,70 @@
+javascript:(function(){if(window.__chCheat){window.__chCheat.toggle();return;}
+const irt=(()=>{try{return window.c3_runtimeInterface._localRuntime._iRuntime;}catch(e){return null;}})();
+if(!irt||!irt.globalVars){alert("Game not ready. Wait until gold counter is visible then try again.");return;}
+function refreshGold(){try{irt.callFunction("SetTotalCoin");}catch(e){}}
+function addGold(n){irt.globalVars.currentCoin=(Number(irt.globalVars.currentCoin)||0)+Number(n);refreshGold();}
+function setGold(n){irt.globalVars.currentCoin=Number(n);refreshGold();}
+function addClickDamage(n){irt.globalVars.clickDamage=(Number(irt.globalVars.clickDamage)||0)+Number(n);}
+function setClickDamage(n){irt.globalVars.clickDamage=Number(n);}
+function trySet(name,val){if(irt.globalVars[name]!==undefined){irt.globalVars[name]=val;return true;}return false;}
+function tryCall(fn){try{irt.callFunction(fn);return true;}catch(e){return false;}}
+/* ===== FLOATING CIRCLE ===== */
+let hideTimer=null,isHidden=false,dragging=false,sx=0,sy=0,ox=0,oy=0;
+const circle=document.createElement("div");
+Object.assign(circle.style,{position:"fixed",width:"54px",height:"54px",borderRadius:"50%",background:"linear-gradient(145deg,#ffd700,#f90)",border:"3px solid #fff",boxShadow:"0 4px 16px rgba(0,0,0,.5)",zIndex:"2147483647",cursor:"grab",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"24px",userSelect:"none",touchAction:"none",left:"12px",top:"38%",transition:"opacity .3s,transform .2s"});
+circle.innerHTML="💰";
+function snap(){const r=circle.getBoundingClientRect();circle.style.left=(r.left+r.width/2<window.innerWidth/2?8:window.innerWidth-r.width-8)+"px";circle.style.transition="left .25s ease,opacity .3s";}
+function scheduleHide(){clearTimeout(hideTimer);hideTimer=setTimeout(()=>{if(!dragging){circle.style.opacity="0.18";circle.style.transform="scale(0.65)";isHidden=true;}},4500);}
+function showCircle(){circle.style.opacity="1";circle.style.transform="scale(1)";isHidden=false;scheduleHide();}
+function down(e){e.preventDefault();dragging=true;circle.style.cursor="grabbing";circle.style.transition="none";const t=e.touches?e.touches[0]:e;const rect=circle.getBoundingClientRect();ox=t.clientX-rect.left;oy=t.clientY-rect.top;sx=t.clientX;sy=t.clientY;showCircle();}
+function move(e){if(!dragging)return;e.preventDefault();const t=e.touches?e.touches[0]:e;circle.style.left=(t.clientX-ox)+"px";circle.style.top=(t.clientY-oy)+"px";}
+function up(e){if(!dragging)return;dragging=false;circle.style.cursor="grab";snap();scheduleHide();const t=e.changedTouches?e.changedTouches[0]:e;if(Math.hypot(t.clientX-sx,t.clientY-sy)<12)openMenu();}
+circle.addEventListener("mousedown",down);circle.addEventListener("touchstart",down,{passive:false});
+window.addEventListener("mousemove",move,{passive:false});window.addEventListener("touchmove",move,{passive:false});
+window.addEventListener("mouseup",up);window.addEventListener("touchend",up);
+/* tiny tab to unhide */
+const tab=document.createElement("div");
+Object.assign(tab.style,{position:"fixed",width:"14px",height:"42px",background:"#f90",borderRadius:"0 8px 8px 0",zIndex:"2147483646",left:"0",top:"40%",opacity:"0.7",cursor:"pointer"});
+tab.onclick=showCircle;
+/* ===== MENU ===== */
+let menu=null;
+function openMenu(){
+  if(menu){menu.remove();menu=null;return;}
+  menu=document.createElement("div");
+  Object.assign(menu.style,{position:"fixed",top:"50%",left:"50%",transform:"translate(-50%,-50%)",background:"#111",color:"#fff",padding:"16px",borderRadius:"14px",boxShadow:"0 16px 50px rgba(0,0,0,.7)",zIndex:"2147483647",fontFamily:"system-ui,sans-serif",width:"300px",maxHeight:"80vh",overflowY:"auto",border:"1px solid #444"});
+  menu.innerHTML=`
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
+      <b style="font-size:17px;">CueMoos Menu</b>
+      <span id="chx" style="cursor:pointer;font-size:22px;opacity:.6;">×</span>
+    </div>
+    <div style="color:#ffaa00;font-size:12px;font-weight:600;margin:8px 0 5px;">GOLD</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;">
+      <button data-g="1e6">+1M</button><button data-g="1e9">+1B</button><button data-g="1e12">+1T</button>
+      <button data-g="1e15">+1Qa</button><button data-g="1e18">+1Qi</button><button data-g="1e30">+1e30</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px;">
+      <button data-sg="0" style="background:#333;color:#fff;">Set 0</button>
+      <button data-sg="1e20" style="background:#333;color:#fff;">Set 1e20</button>
+    </div>
+    <div style="color:#ffaa00;font-size:12px;font-weight:600;margin:14px 0 5px;">CLICK DAMAGE</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;">
+      <button data-cd="10">+10</button>
+      <button data-cd="100">+100</button>
+      <button data-scd="0" style="background:#333;color:#fff;">Set 0</button>
+      <button id="maxclick">Max</button>
+    </div>
+  `;
+  menu.querySelectorAll("button").forEach(b=>{Object.assign(b.style,{padding:"8px 4px",border:"none",borderRadius:"7px",background:"#ffaa00",color:"#000",fontWeight:"600",cursor:"pointer",fontSize:"12px"});});
+  document.body.appendChild(menu);
+  menu.querySelector("#chx").onclick=()=>{menu.remove();menu=null;};
+  menu.querySelectorAll("[data-g]").forEach(b=>b.onclick=()=>{addGold(b.dataset.g);});
+  menu.querySelectorAll("[data-sg]").forEach(b=>b.onclick=()=>{setGold(b.dataset.sg);});
+  menu.querySelectorAll("[data-cd]").forEach(b=>b.onclick=()=>{addClickDamage(b.dataset.cd);});
+  menu.querySelectorAll("[data-scd]").forEach(b=>b.onclick=()=>{setClickDamage(b.dataset.scd);});
+  menu.querySelector("#maxclick").onclick=()=>{setClickDamage(1e20);};
+}
+document.body.appendChild(circle);document.body.appendChild(tab);
+snap();scheduleHide();
+window.__chCheat={toggle:()=>{if(isHidden)showCircle();else{circle.style.opacity="0.18";circle.style.transform="scale(0.65)";isHidden=true;}}};
+console.log("%c💰 Cheat ready – click the gold circle","color:#ffaa00;font-weight:bold");
+})();
