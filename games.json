@@ -23,6 +23,22 @@
     "url": "games/eggycar/eggycar.html",
     "thumbnail": "thumbs/eggycar.png"
   },
+    {
+    "id": "drivemad",
+    "name": "Drive Mad",
+    "description": "Drive the car mad into things..",
+    "category": "Driving",
+    "url": "games/drivemad/drivemad.html",
+    "thumbnail": "thumbs/drivemad.png"
+  },
+    {
+    "id": "driftboss",
+    "name": "Drift Boss",
+    "description": "Drift the car and stay on platform.",
+    "category": "Driving",
+    "url": "games/driftboss/driftboss.html",
+    "thumbnail": "thumbs/driftboss.png"
+  },
   {
     "id": "subwaysurfers",
     "name": "Subway Surfers",
