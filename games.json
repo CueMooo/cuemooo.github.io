@@ -5,7 +5,7 @@
     "description": "Run your football team and win the game.",
     "category": "Sports",
     "url": "games/retrobowl/index.html",
-    "thumbnail": "thumbs/img/icon.jpg"
+    "thumbnail": "games/retrobowl/img/icon.jpg"
   },
   {
     "id": "basketballlegends",
@@ -13,7 +13,7 @@
     "description": "1v1 basketball with crazy dunks and special moves.",
     "category": "Sports",
     "url": "games/basketballlegends/index.html",
-    "thumbnail": "thumbs/basketballlegends.png"
+    "thumbnail": "games/basketballlegends/assets/images/logo.png"
   },
   {
     "id": "eggycar",
