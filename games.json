@@ -31,14 +31,6 @@
     "url": "games/subwaysurfersny/index.html",
     "thumbnail": "thumbs/subwaysurfers.png"
   },
-    {
-    "id": "motox3m",
-    "name": "Moto X3M",
-    "description": "Drive through maps and dodge obstacles.",
-    "category": "Arcade",
-    "url": "games/motox3m/index.html",
-    "thumbnail": "thumbs/motox3m.jpg"
-  },
   {
     "id": "stickmanhook",
     "name": "Stickman Hook",
