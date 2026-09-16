@@ -86,7 +86,7 @@
     "category": "Idle",
     "url": "games/clickerheroes/index.html",
     "thumbnail": "thumbs/clickerheroes.png"
-  }
+  },
   {
     "id": "littlealchemy1",
     "name": "Little Alchemy 1",
@@ -94,7 +94,7 @@
     "category": "Puzzle",
     "url": "games/littlealchemy1/index.html",
     "thumbnail": "thumbs/littlealchemy1.png"
-  }
+  },
   {
     "id": "littlealchemy2",
     "name": "Little Alchemy",
