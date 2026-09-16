@@ -87,4 +87,20 @@
     "url": "games/clickerheroes/index.html",
     "thumbnail": "thumbs/clickerheroes.png"
   }
+  {
+    "id": "littlealchemy1",
+    "name": "Little Alchemy 1",
+    "description": "Mix elements to make more elements",
+    "category": "Puzzle",
+    "url": "games/littlealchemy1/index.html",
+    "thumbnail": "thumbs/littlealchemy1.png"
+  }
+  {
+    "id": "littlealchemy2",
+    "name": "Little Alchemy",
+    "description": "Mix elements to make more elements",
+    "category": "Puzzle",
+    "url": "games/littlealchemy2/index.html",
+    "thumbnail": "thumbs/littlealchemy2.png"
+  }
 ]
