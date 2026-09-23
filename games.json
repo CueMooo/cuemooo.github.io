@@ -24,6 +24,14 @@
     "thumbnail": "thumbs/eggycar.png"
   },
     {
+    "id": "Fahrenheit451",
+    "name": "Fahrenheit 451",
+    "description": "The PDF of this book",
+    "category": "Sports",
+    "url": "games/Fahrenheit451/index.html",
+    "thumbnail": "games/retrobowl/img/icon.jpg"
+  },
+    {
     "id": "drivemad",
     "name": "Drive Mad",
     "description": "Drive the car mad into things..",
