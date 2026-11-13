@@ -35,8 +35,8 @@
         <div class="chat-heading"><div><h2>Global Chat</h2><p>Talk with everyone playing on CueMoos Games.</p></div><span class="chat-live">● LIVE</span></div>
         <section id="chat-auth" class="chat-auth">
           <div class="chat-auth-tabs">
-            <button type="button" class="chat-auth-tab active" data-auth-mode="signup">Create account</button>
-            <button type="button" class="chat-auth-tab" data-auth-mode="login">Log in</button>
+            <button type="button" class="chat-auth-tab active" data-auth-mode="signup" aria-pressed="true">Create account</button>
+            <button type="button" class="chat-auth-tab" data-auth-mode="login" aria-pressed="false">Log in</button>
           </div>
           <form id="chat-auth-form">
             <label for="chat-auth-username">Username</label>
@@ -103,12 +103,6 @@
 
   <footer><div class="container"><p>CueMoos Games</p></div></footer>
   <script src="script.js"></script>
-  <script>
-    document.getElementById("chat-auth-form").addEventListener("submit", function (event) {
-      event.preventDefault();
-      document.getElementById("chat-status").textContent = "Chat is loading. If this message stays here, the chat script did not load.";
-    });
-  </script>
-  <script type="module" src="chat-live.js?v=20261113-owner3"></script>
+  <script type="module" src="chat-live.js?v=20261113-authfix1"></script>
 </body>
 </html>
