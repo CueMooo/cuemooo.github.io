@@ -59,7 +59,7 @@
           </section>
           <section class="social-view hidden" id="view-messages"><div class="social-inline"><select id="dm-friend"><option value="">Choose a friend</option></select><button id="dm-refresh">Refresh</button></div><div id="dm-messages" class="social-messages"><p class="chat-empty">Choose a friend to view messages.</p></div><form id="dm-form" class="chat-compose"><input id="dm-input" maxlength="1000" placeholder="Private message..." disabled><button id="dm-send" type="submit" disabled>Send</button></form></section>
           <section class="social-view hidden" id="view-groups"><h3>Your groups</h3><div id="group-list" class="social-list"></div><h3>Create a group</h3><form id="group-create" class="social-inline"><input id="group-name" maxlength="40" minlength="2" placeholder="Group name" required><button>Create</button></form><div id="group-active" class="hidden"><h3 id="group-title"></h3><div id="group-messages" class="social-messages"></div><form id="group-form" class="chat-compose"><input id="group-input" maxlength="1000" placeholder="Message group..." disabled><button id="group-send" type="submit" disabled>Send</button></form></div></section>
-          <section class="social-view hidden" id="view-profile"><h3>Your profile</h3><div class="profile-editor"><img id="profile-avatar" alt="Profile avatar" src=""><label>Avatar <input id="profile-avatar-file" type="file" accept="image/png,image/jpeg,image/webp"></label><label>Display name<input id="profile-display" maxlength="30" placeholder="Display name"></label><label>Bio<textarea id="profile-bio" maxlength="160" rows="3" placeholder="A little about you..."></textarea></label><button id="profile-save">Save profile</button></div></section>
+          <section class="social-view hidden" id="view-profile"><h3>Your profile</h3><div class="profile-editor"><label>Display name<input id="profile-display" maxlength="30" placeholder="Display name"></label><label>Bio<textarea id="profile-bio" maxlength="160" rows="3" placeholder="A little about you..."></textarea></label><button id="profile-save">Save profile</button></div></section>
           <section class="social-view hidden" id="view-owner"><h3>Owner dashboard</h3><p class="chat-note">Manage roles and account access. Only promote accounts you trust.</p><div id="owner-users" class="social-list"></div></section>
         </section>
         <p id="chat-status" class="chat-status" role="status">Create an account or log in to join the chat.</p>
@@ -105,6 +105,6 @@
       document.getElementById("chat-status").textContent = "Chat is loading. If this message stays here, the chat script did not load.";
     });
   </script>
-  <script type="module" src="chat-live.js?v=20261113-live"></script>
+  <script type="module" src="chat-live.js?v=20261113-ui2"></script>
 </body>
 </html>
