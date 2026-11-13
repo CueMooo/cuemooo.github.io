@@ -75,6 +75,11 @@ alter table public.chat_group_members enable row level security;
 alter table public.direct_messages enable row level security;
 alter table public.group_messages enable row level security;
 
+-- Security-definer membership check avoids recursive RLS on chat_group_members.
+create or replace function public.is_cuemoo_group_member(gid bigint, uid uuid)
+returns boolean language sql stable security definer set search_path=public
+as $ select exists(select 1 from public.chat_group_members m where m.group_id=gid and m.user_id=uid) $;
+
 -- Helper: only accepted friends can exchange DMs.
 create or replace function public.are_cuemoo_friends(a uuid,b uuid)
 returns boolean language sql stable security definer set search_path=public
@@ -83,7 +88,7 @@ as $$ select exists(select 1 from public.friend_requests
 
 drop policy if exists "Group members can view groups" on public.chat_groups;
 create policy "Group members can view groups" on public.chat_groups for select to authenticated
-using (exists(select 1 from public.chat_group_members m where m.group_id=id and m.user_id=auth.uid()));
+using (public.is_cuemoo_group_member(id,auth.uid()));
 drop policy if exists "Signed-in users can create groups" on public.chat_groups;
 create policy "Signed-in users can create groups" on public.chat_groups for insert to authenticated
 with check(created_by=auth.uid());
@@ -93,7 +98,7 @@ using(created_by=auth.uid()) with check(created_by=auth.uid());
 
 drop policy if exists "Members can view group membership" on public.chat_group_members;
 create policy "Members can view group membership" on public.chat_group_members for select to authenticated
-using(exists(select 1 from public.chat_group_members m where m.group_id=chat_group_members.group_id and m.user_id=auth.uid()));
+using(public.is_cuemoo_group_member(chat_group_members.group_id,auth.uid()));
 drop policy if exists "Group creator can add members" on public.chat_group_members;
 create policy "Group creator can add members" on public.chat_group_members for insert to authenticated
 with check(exists(select 1 from public.chat_groups g where g.id=chat_group_members.group_id and g.created_by=auth.uid()));
@@ -109,10 +114,10 @@ create policy "Friends can send DMs" on public.direct_messages for insert to aut
 with check(sender_id=auth.uid() and public.are_cuemoo_friends(sender_id,receiver_id));
 drop policy if exists "Group members can read messages" on public.group_messages;
 create policy "Group members can read messages" on public.group_messages for select to authenticated
-using(exists(select 1 from public.chat_group_members m where m.group_id=group_messages.group_id and m.user_id=auth.uid()));
+using(public.is_cuemoo_group_member(group_messages.group_id,auth.uid()));
 drop policy if exists "Group members can send messages" on public.group_messages;
 create policy "Group members can send messages" on public.group_messages for insert to authenticated
-with check(sender_id=auth.uid() and exists(select 1 from public.chat_group_members m where m.group_id=group_messages.group_id and m.user_id=auth.uid()));
+with check(sender_id=auth.uid() and public.is_cuemoo_group_member(group_messages.group_id,auth.uid()));
 
 -- Moderators/owner can delete public chat messages; owner can manage roles and bans.
 drop policy if exists "Moderators can remove global chat messages" on public.chat_messages;
