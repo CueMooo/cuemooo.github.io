@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CueMoos Games</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=20261113-socialfix1">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23e56b92'/><text x='50' y='68' text-anchor='middle' font-size='52' font-family='system-ui,sans-serif' font-weight='700' fill='white'>C</text></svg>">
 </head>
 <body>
@@ -52,7 +52,7 @@
           <div class="social-nav" id="social-nav">
             <button class="social-tab active" data-social="global">Global</button><button class="social-tab" data-social="friends">Friends</button><button class="social-tab" data-social="messages">Messages</button><button class="social-tab" data-social="profile">Profile</button><button class="social-tab hidden" id="owner-tab" data-social="owner">Owner</button>
           </div>
-          <section class="social-view" id="view-global"><div id="ban-banner" class="ban-banner hidden" role="alert"><strong>🚫 BANNED</strong><span>This account is banned. You can stay signed in, but games and chat are disabled.</span></div><div id="chat-messages" class="chat-messages" aria-live="polite"><p class="chat-empty">Loading messages…</p></div><form id="chat-form" class="chat-compose"><input id="chat-message" maxlength="300" placeholder="Write a message..." autocomplete="off" disabled><button id="chat-send" type="submit" disabled>Send</button></form></section>
+          <section class="social-view" id="view-global"><div id="ban-banner" class="ban-banner hidden" role="alert"><strong>🚫 BANNED</strong><span>This account is banned. You can stay signed in, but games and chat are disabled.</span></div><div class="global-chat-tools"><span class="chat-tools-label">Community chat</span><button type="button" id="clear-chat" class="danger-btn hidden">Clear chat</button></div><div id="chat-messages" class="chat-messages" aria-live="polite"><p class="chat-empty">Loading messages…</p></div><form id="chat-form" class="chat-compose"><input id="chat-message" maxlength="300" placeholder="Write a message..." autocomplete="off" disabled><button id="chat-send" type="submit" disabled>Send</button></form></section>
           <section class="social-view hidden" id="view-friends">
             <h3>Find players</h3><div class="social-inline"><input id="friend-search" maxlength="24" placeholder="Search username"><button id="friend-search-btn">Search</button></div><div id="friend-results" class="social-list"></div>
             <h3>Friend requests</h3><div id="friend-requests" class="social-list"></div><h3>Your friends</h3><div id="friend-list" class="social-list"></div><div id="public-profile" class="public-profile hidden" aria-live="polite"></div>
@@ -102,6 +102,6 @@
 
   <footer><div class="container"><p>CueMoos Games</p></div></footer>
   <script src="script.js"></script>
-  <script type="module" src="chat-live.js?v=20261113-banfix2"></script>
+  <script type="module" src="chat-live.js?v=20261113-socialfix1"></script>
 </body>
 </html>
