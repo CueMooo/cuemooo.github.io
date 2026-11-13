@@ -15,6 +15,7 @@
         <button class="nav-btn active" data-tab="games">Games</button>
         <button class="nav-btn" data-tab="about">About</button>
         <button class="nav-btn" data-tab="settings">Settings</button>
+        <button class="nav-btn" data-tab="chat">Global Chat</button>
       </nav>
     </div>
   </header>
@@ -29,6 +30,18 @@
       </div>
       <div id="games-grid" class="games-grid"></div>
       <p id="no-results" class="no-results hidden">No games found.</p>
+    </section>
+
+    <section id="chat" class="tab-content">
+      <div class="chat-card">
+        <div class="chat-heading"><div><h2>Global Chat</h2><p>Talk with everyone playing on CueMoos Games.</p></div><span class="chat-live">● LIVE</span></div>
+        <label for="chat-username">Your display name</label>
+        <div class="chat-identity"><input id="chat-username" maxlength="20" placeholder="Choose a username" autocomplete="nickname"><button id="chat-save-name" type="button">Save name</button></div>
+        <p id="chat-status" class="chat-status" role="status">Add your free Supabase settings to connect.</p>
+        <div id="chat-messages" class="chat-messages" aria-live="polite"><p class="chat-empty">Chat is waiting for setup.</p></div>
+        <form id="chat-form" class="chat-compose"><input id="chat-message" maxlength="300" placeholder="Write a message..." autocomplete="off" disabled><button id="chat-send" type="submit" disabled>Send</button></form>
+        <p class="chat-note">Be respectful. Please do not share your real name, location, school, or other personal information.</p>
+      </div>
     </section>
 
     <section id="about" class="tab-content">
@@ -99,5 +112,6 @@
     </div>
   </footer>
   <script src="script.js"></script>
+  <script type="module" src="chat.js"></script>
 </body>
 </html>
