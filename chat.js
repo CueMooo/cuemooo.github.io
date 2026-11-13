@@ -1,8 +1,8 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 // Add the Supabase Project URL and public anon/publishable key here.
-const SUPABASE_URL = "PASTE_PROJECT_URL_HERE";
-const SUPABASE_KEY = "PASTE_PUBLIC_ANON_OR_PUBLISHABLE_KEY_HERE";
+const SUPABASE_URL = "https://yiapojosvsvsswgrcupk.supabase.co";
+const SUPABASE_KEY = "sb_publishable_FBsP-RmhkkUTl5Wy-bJvAQ_oY-eavez";
 const $ = (id) => document.getElementById(id);
 const status = $("chat-status");
 const messages = $("chat-messages");
