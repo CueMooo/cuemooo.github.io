@@ -86,3 +86,10 @@ drop trigger if exists cuemoo_private_message_cooldown on public.direct_messages
 create trigger cuemoo_private_message_cooldown
 before insert on public.direct_messages
 for each row execute function public.cuemoo_enforce_chat_cooldown();
+
+-- Allow a currently signed-in member to receive an immediate ban/unban update.
+do $$
+begin
+ alter publication supabase_realtime add table public.chat_profiles;
+exception when duplicate_object then null;
+end $$;
