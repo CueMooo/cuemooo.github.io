@@ -372,3 +372,53 @@ footer {
 .profile-editor label{display:grid;gap:5px;color:var(--text-muted);font-size:.78rem}
 #profile-avatar{width:72px;height:72px;border-radius:50%;object-fit:cover;background:var(--surface-2);border:1px solid var(--border)}
 @media(max-width:600px){.social-nav{margin-right:-4px}.social-tab{padding:7px 9px}.social-inline>*{min-width:0}.social-inline input{width:55%}}
+
+
+/* CueMoo social hub — unified visual refresh */
+.chat-card{max-width:960px;padding:clamp(16px,3vw,30px);border-radius:20px;background:linear-gradient(145deg,#15151d,#0b0b10);border:1px solid #292936;box-shadow:0 24px 70px #0008}
+.chat-heading{align-items:center;padding-bottom:18px;border-bottom:1px solid #292936;margin-bottom:20px}
+.chat-heading h2{font-size:clamp(1.35rem,3vw,1.8rem);letter-spacing:-.04em;margin:0 0 5px}
+.chat-heading p{margin:0;color:#a6a6b6}
+.chat-live{padding:6px 10px;border-radius:99px;background:#10281f;color:#6ee7a4;font-size:.68rem;letter-spacing:.08em}
+.chat-account-bar{padding:10px 13px;border:1px solid #292936;border-radius:12px;background:#111119;margin-bottom:16px}
+#chat-logout{background:#22222d;color:#f5f5fa;border:1px solid #373744;border-radius:9px;transition:.18s}
+#chat-logout:hover{background:#30303d;border-color:#555568}
+.social-nav{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:7px;padding:6px;background:#09090e;border:1px solid #282833;border-radius:14px;margin-bottom:16px}
+.social-tab{display:flex;align-items:center;justify-content:center;min-height:40px;padding:9px 8px;border:1px solid transparent;border-radius:9px;background:transparent;color:#a9a9b8;font-size:.8rem;font-weight:700;transition:background .18s,color .18s,border-color .18s}
+.social-tab:hover{background:#1b1b25;color:#fff}
+.social-tab.active{background:var(--primary);color:#171018;border-color:transparent;box-shadow:0 4px 16px color-mix(in srgb,var(--primary) 25%,transparent)}
+.social-view{padding:clamp(12px,2vw,20px);background:#101017;border:1px solid #292936;border-radius:15px;min-height:260px}
+.social-view h3{font-size:.92rem;letter-spacing:-.01em;color:#f1f1f6;margin:18px 0 10px}
+.social-view h3:first-child{margin-top:0}
+.social-inline{display:flex;align-items:center;gap:9px;margin:10px 0 14px}
+.social-inline input,.social-inline select,.profile-editor input,.profile-editor textarea,.chat-compose input,#chat-auth-form input{width:100%;min-width:0;min-height:42px;padding:11px 13px;background:#09090f;border:1px solid #343442;border-radius:10px;color:#f6f6fa;font:inherit;font-size:.84rem;outline:none;transition:border-color .18s,box-shadow .18s}
+.social-inline input:focus,.social-inline select:focus,.profile-editor input:focus,.profile-editor textarea:focus,.chat-compose input:focus,#chat-auth-form input:focus{border-color:var(--primary);box-shadow:0 0 0 3px color-mix(in srgb,var(--primary) 17%,transparent)}
+.social-inline button,.social-list button,.profile-editor button,.chat-compose button,#chat-auth-form button{min-height:40px;padding:9px 15px;border:1px solid var(--primary);border-radius:10px;background:var(--primary);color:#171018;font:inherit;font-size:.8rem;font-weight:800;cursor:pointer;transition:transform .15s,filter .15s,background .15s}
+.social-inline button:hover,.social-list button:hover,.profile-editor button:hover,.chat-compose button:hover,#chat-auth-form button:hover{filter:brightness(1.1);transform:translateY(-1px)}
+.social-inline button:active,.social-list button:active,.profile-editor button:active,.chat-compose button:active{transform:translateY(0)}
+.social-list{gap:8px}
+.social-person,.social-row{padding:12px 13px;border:1px solid #30303c;border-radius:12px;background:linear-gradient(110deg,#191922,#14141b);color:#f1f1f6}
+.social-person small{margin-top:3px;color:#9292a4}
+.social-actions{gap:6px}
+.social-actions button{min-height:32px;padding:6px 10px;font-size:.72rem}
+.social-actions button:last-child:not(:first-child){background:#242430;color:#ddd;border-color:#3a3a48}
+.social-messages,.chat-messages{background:#09090f;border:1px solid #292936;border-radius:13px;padding:12px}
+.social-messages{height:300px}
+.social-bubble,.chat-message{padding:11px 13px;background:#191922;border:1px solid #2b2b38;border-radius:12px;color:#ededf4}
+.social-bubble small{color:#9292a4;margin-top:5px}
+.chat-message-body{line-height:1.45}
+.chat-message button{margin-top:7px;padding:4px 8px;background:transparent;color:#aaa;border:1px solid #383844;border-radius:7px;font-size:.7rem}
+.chat-compose{gap:8px;margin-top:12px}
+.chat-compose input{flex:1}
+.chat-compose button{min-width:76px}
+.profile-editor{max-width:520px;gap:13px}
+.profile-editor label{gap:7px;color:#b7b7c5;font-weight:650}
+.profile-editor textarea{resize:vertical;min-height:90px}
+#chat-status{padding:0 3px}
+#chat-auth-form button{margin-top:8px}
+.chat-auth-tabs{padding:5px;background:#09090f;border:1px solid #292936;border-radius:12px}
+.chat-auth-tab{border:0}
+.chat-auth-tab.active{background:var(--primary);color:#171018}
+.hidden{display:none!important}
+@media(max-width:650px){.social-nav{grid-template-columns:repeat(3,minmax(0,1fr))}.social-view{padding:12px}.social-inline{align-items:stretch}.social-inline input{flex:1;width:100%}.social-inline button{flex-shrink:0}.social-person,.social-row{align-items:flex-start;flex-direction:column}.social-actions{width:100%}.social-actions button{flex:1}.chat-card{padding:12px;border-radius:15px}}
+@media(prefers-reduced-motion:reduce){.social-tab,.social-inline button,.social-list button,.profile-editor button{transition:none}}
