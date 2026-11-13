@@ -243,3 +243,19 @@ applySettings();
 renderThemes();
 wireSettings();
 loadGames();
+
+/* Respect the signed-in CueMoo account's ban state before opening games. */
+document.addEventListener("click", function(event) {
+  const play = event.target.closest && event.target.closest(".play-btn");
+  if (!play) return;
+  if (window.cuemooAccountStatus === "checking") {
+    event.preventDefault();
+    alert("Checking your CueMoo account status. Try again in a moment.");
+    return;
+  }
+  if (window.cuemooBanned === true || window.cuemooAccountStatus === "banned") {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    alert("🚫 BANNED — this account cannot launch games.");
+  }
+}, true);
