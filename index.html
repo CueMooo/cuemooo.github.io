@@ -89,6 +89,12 @@
 
   <footer><div class="container"><p>CueMoos Games</p></div></footer>
   <script src="script.js"></script>
-  <script type="module" src="chat.js?v=20261113-3"></script>
+  <script>
+    document.getElementById("chat-auth-form").addEventListener("submit", function (event) {
+      event.preventDefault();
+      document.getElementById("chat-status").textContent = "Chat is loading. If this message stays here, the chat script did not load.";
+    });
+  </script>
+  <script type="module" src="chat-live.js?v=20261113-live"></script>
 </body>
 </html>
