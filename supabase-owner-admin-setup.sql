@@ -93,3 +93,18 @@ begin
  alter publication supabase_realtime add table public.chat_profiles;
 exception when duplicate_object then null;
 end $$;
+
+
+-- EMERGENCY RESET: clear accidental bans for every existing member.
+-- Keep the designated CueMoo owner account as owner.
+update public.chat_profiles
+set is_banned = false;
+
+update public.chat_profiles
+set role = 'owner'
+where lower(username) = 'cuemo';
+
+-- Verify the reset and owner assignment.
+select username, role, is_banned
+from public.chat_profiles
+order by username;
