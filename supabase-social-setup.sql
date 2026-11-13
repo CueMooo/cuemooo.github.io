@@ -12,6 +12,7 @@ update public.chat_profiles set display_name=username where display_name is null
 
 -- Keep profile edits limited to safe public fields. Role/ban changes are owner-only below.
 drop policy if exists "Players can update own profile" on public.chat_profiles;
+drop policy if exists "Players can update own profile" on public.chat_profiles;
 create policy "Players can update own profile" on public.chat_profiles
 for update to authenticated using (id=auth.uid() and is_banned=false)
 with check (id=auth.uid() and role='member' and is_banned=false);
@@ -27,11 +28,14 @@ create table if not exists public.friend_requests (
 );
 alter table public.friend_requests enable row level security;
 drop policy if exists "Users can view own friend requests" on public.friend_requests;
+drop policy if exists "Users can view own friend requests" on public.friend_requests;
 create policy "Users can view own friend requests" on public.friend_requests
 for select to authenticated using (sender_id=auth.uid() or receiver_id=auth.uid());
 drop policy if exists "Users can send friend requests" on public.friend_requests;
+drop policy if exists "Users can send friend requests" on public.friend_requests;
 create policy "Users can send friend requests" on public.friend_requests
 for insert to authenticated with check(sender_id=auth.uid() and receiver_id<>auth.uid() and status='pending');
+drop policy if exists "Recipients can respond to requests" on public.friend_requests;
 drop policy if exists "Recipients can respond to requests" on public.friend_requests;
 create policy "Recipients can respond to requests" on public.friend_requests
 for update to authenticated using (receiver_id=auth.uid() and status='pending')
@@ -77,32 +81,44 @@ returns boolean language sql stable security definer set search_path=public
 as $$ select exists(select 1 from public.friend_requests
  where status='accepted' and ((sender_id=a and receiver_id=b) or (sender_id=b and receiver_id=a))) $$;
 
+drop policy if exists "Group members can view groups" on public.chat_groups;
 create policy "Group members can view groups" on public.chat_groups for select to authenticated
 using (exists(select 1 from public.chat_group_members m where m.group_id=id and m.user_id=auth.uid()));
+drop policy if exists "Signed-in users can create groups" on public.chat_groups;
 create policy "Signed-in users can create groups" on public.chat_groups for insert to authenticated
 with check(created_by=auth.uid());
+drop policy if exists "Group creator can edit group" on public.chat_groups;
 create policy "Group creator can edit group" on public.chat_groups for update to authenticated
 using(created_by=auth.uid()) with check(created_by=auth.uid());
 
+drop policy if exists "Members can view group membership" on public.chat_group_members;
 create policy "Members can view group membership" on public.chat_group_members for select to authenticated
 using(exists(select 1 from public.chat_group_members m where m.group_id=chat_group_members.group_id and m.user_id=auth.uid()));
+drop policy if exists "Group creator can add members" on public.chat_group_members;
 create policy "Group creator can add members" on public.chat_group_members for insert to authenticated
-with check(exists(select 1 from public.chat_groups g where g.id=group_id and g.created_by=auth.uid()) or user_id=auth.uid());
+with check(exists(select 1 from public.chat_groups g where g.id=chat_group_members.group_id and g.created_by=auth.uid()));
+drop policy if exists "Members can leave groups" on public.chat_group_members;
 create policy "Members can leave groups" on public.chat_group_members for delete to authenticated
 using(user_id=auth.uid());
 
+drop policy if exists "Friends can read DMs" on public.direct_messages;
 create policy "Friends can read DMs" on public.direct_messages for select to authenticated
 using(sender_id=auth.uid() or receiver_id=auth.uid());
+drop policy if exists "Friends can send DMs" on public.direct_messages;
 create policy "Friends can send DMs" on public.direct_messages for insert to authenticated
 with check(sender_id=auth.uid() and public.are_cuemoo_friends(sender_id,receiver_id));
+drop policy if exists "Group members can read messages" on public.group_messages;
 create policy "Group members can read messages" on public.group_messages for select to authenticated
-using(exists(select 1 from public.chat_group_members m where m.group_id=group_id and m.user_id=auth.uid()));
+using(exists(select 1 from public.chat_group_members m where m.group_id=group_messages.group_id and m.user_id=auth.uid()));
+drop policy if exists "Group members can send messages" on public.group_messages;
 create policy "Group members can send messages" on public.group_messages for insert to authenticated
-with check(sender_id=auth.uid() and exists(select 1 from public.chat_group_members m where m.group_id=group_id and m.user_id=auth.uid()));
+with check(sender_id=auth.uid() and exists(select 1 from public.chat_group_members m where m.group_id=group_messages.group_id and m.user_id=auth.uid()));
 
 -- Moderators/owner can delete public chat messages; owner can manage roles and bans.
+drop policy if exists "Moderators can remove global chat messages" on public.chat_messages;
 create policy "Moderators can remove global chat messages" on public.chat_messages for delete to authenticated
 using(exists(select 1 from public.chat_profiles p where p.id=auth.uid() and p.role in ('moderator','owner')));
+drop policy if exists "Owner can update member moderation" on public.chat_profiles;
 create policy "Owner can update member moderation" on public.chat_profiles for update to authenticated
 using(exists(select 1 from public.chat_profiles me where me.id=auth.uid() and me.role='owner'))
 with check(exists(select 1 from public.chat_profiles me where me.id=auth.uid() and me.role='owner'));
@@ -111,9 +127,12 @@ with check(exists(select 1 from public.chat_profiles me where me.id=auth.uid() a
 insert into storage.buckets(id,name,public,file_size_limit,allowed_mime_types)
 values('cuemoo-avatars','cuemoo-avatars',true,2097152,array['image/png','image/jpeg','image/webp'])
 on conflict(id) do nothing;
+drop policy if exists "Public can view CueMoo avatars" on storage.objects;
 create policy "Public can view CueMoo avatars" on storage.objects for select using(bucket_id='cuemoo-avatars');
+drop policy if exists "Users upload own avatar" on storage.objects;
 create policy "Users upload own avatar" on storage.objects for insert to authenticated
 with check(bucket_id='cuemoo-avatars' and (storage.foldername(name))[1]=auth.uid()::text);
+drop policy if exists "Users update own avatar" on storage.objects;
 create policy "Users update own avatar" on storage.objects for update to authenticated
 using(bucket_id='cuemoo-avatars' and (storage.foldername(name))[1]=auth.uid()::text)
 with check(bucket_id='cuemoo-avatars' and (storage.foldername(name))[1]=auth.uid()::text);
