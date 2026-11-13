@@ -325,3 +325,20 @@ footer {
 .chat-compose{margin-top:12px}.chat-compose button:disabled,.chat-compose input:disabled{opacity:.5;cursor:not-allowed}
 .chat-note{margin-top:12px}
 @media(max-width:700px){.chat-card{padding:15px}.chat-messages{height:55vh;min-height:260px}}
+
+
+/* Username/password global chat accounts */
+.chat-auth{max-width:440px;margin:0 auto}
+.chat-auth-tabs{display:flex;gap:8px;margin-bottom:16px}
+.chat-auth-tab{flex:1;padding:10px;border:1px solid var(--border);border-radius:9px;background:var(--bg);color:var(--text-muted);font-weight:700;cursor:pointer}
+.chat-auth-tab.active{background:var(--primary);border-color:var(--primary);color:#111}
+#chat-auth-form{display:flex;flex-direction:column;gap:8px}
+#chat-auth-form label{margin:5px 0 0}
+#chat-auth-form input{width:100%;padding:12px 13px;background:var(--bg);border:1px solid var(--border);border-radius:9px;color:var(--text);outline:none}
+#chat-auth-form input:focus{border-color:var(--primary)}
+#chat-auth-form button,#chat-logout{padding:11px 15px;border:0;border-radius:9px;background:var(--primary);color:#111;font-weight:750;cursor:pointer}
+#chat-auth-form button:disabled{opacity:.55;cursor:not-allowed}
+.chat-account-note{margin-top:12px;color:var(--text-muted);font-size:.8rem}
+.chat-account-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:12px;color:var(--text-muted);font-size:.88rem}
+.chat-account-bar strong{color:var(--primary)}
+#chat-logout{padding:7px 12px;font-size:.8rem}
