@@ -1,214 +1,33 @@
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-
-// Add the Supabase Project URL and public anon/publishable key here.
-const SUPABASE_URL = "https://yiapojosvsvsswgrcupk.supabase.co";
-const SUPABASE_KEY = "sb_publishable_FBsP-RmhkkUTl5Wy-bJvAQ_oY-eavez";
-const $ = (id) => document.getElementById(id);
-const status = $("chat-status");
-const messages = $("chat-messages");
-const authSection = $("chat-auth");
-const roomSection = $("chat-room");
-const authForm = $("chat-auth-form");
-const usernameInput = $("chat-auth-username");
-const passwordInput = $("chat-auth-password");
-const authSubmit = $("chat-auth-submit");
-const messageInput = $("chat-message");
-const sendButton = $("chat-send");
-let db, user = null, username = "", authMode = "signup", lastSent = 0, channel = null;
-const seen = new Set();
-
-function say(message, error = false) {
-  status.textContent = message;
-  status.classList.toggle("error", error);
-}
-function normalizeUsername(value) {
-  return value.trim().toLowerCase();
-}
-function validUsername(value) {
-  return /^[a-z0-9_]{3,20}$/.test(value);
-}
-function authEmail(value) {
-  // Supabase Auth uses email internally; this reserved, non-deliverable alias
-  // gives players username-only sign-in without collecting email addresses.
-  return value + "@accounts.cuemoo.invalid";
-}
-function setAuthMode(mode) {
-  authMode = mode;
-  document.querySelectorAll("[data-auth-mode]").forEach(button => {
-    button.classList.toggle("active", button.dataset.authMode === mode);
-  });
-  authSubmit.textContent = mode === "signup" ? "Create account" : "Log in";
-  passwordInput.autocomplete = mode === "signup" ? "new-password" : "current-password";
-  say(mode === "signup" ? "Choose a username and password." : "Enter your username and password.");
-}
-function showRoom(profileName) {
-  username = profileName;
-  $("chat-current-user").textContent = username;
-  authSection.classList.add("hidden");
-  roomSection.classList.remove("hidden");
-  loadMessages();
-  subscribeToMessages();
-}
-function showAuth() {
-  user = null;
-  username = "";
-  roomSection.classList.add("hidden");
-  authSection.classList.remove("hidden");
-  messages.replaceChildren();
-  if (channel) { db.removeChannel(channel); channel = null; }
-}
-function addMessage(row) {
-  if (!row || seen.has(row.id)) return;
-  seen.add(row.id);
-  messages.querySelector(".chat-empty")?.remove();
-  const article = document.createElement("article");
-  article.className = "chat-message";
-  const top = document.createElement("div");
-  top.className = "chat-message-top";
-  const author = document.createElement("strong");
-  author.className = "chat-message-name";
-  author.textContent = row.username || "Player";
-  const time = document.createElement("time");
-  time.dateTime = row.created_at;
-  time.textContent = new Date(row.created_at).toLocaleTimeString([], {hour:"numeric", minute:"2-digit"});
-  const body = document.createElement("div");
-  body.className = "chat-message-body";
-  body.textContent = row.content;
-  const report = document.createElement("button");
-  report.className = "chat-report";
-  report.type = "button";
-  report.textContent = "Report";
-  report.addEventListener("click", async () => {
-    if (!confirm("Report this message to the site owner?")) return;
-    const {error} = await db.from("chat_reports").insert({message_id:row.id, reporter_id:user.id});
-    say(error ? "Could not submit report." : "Report submitted. Thanks.", !!error);
-  });
-  top.append(author, time);
-  article.append(top, body, report);
-  messages.append(article);
-  while (messages.children.length > 100) messages.firstElementChild.remove();
-  messages.scrollTop = messages.scrollHeight;
-}
-async function loadMessages() {
-  seen.clear();
-  messages.innerHTML = '<p class="chat-empty">Loading messages…</p>';
-  const {data, error} = await db.from("chat_messages")
-    .select("id,username,content,created_at")
-    .order("created_at", {ascending:false}).limit(50);
-  if (error) { say("Couldn't load chat messages. Check your Supabase setup.", true); return; }
-  messages.replaceChildren();
-  (data || []).reverse().forEach(addMessage);
-  if (!messages.children.length) messages.innerHTML = '<p class="chat-empty">No messages yet. Start the conversation.</p>';
-  messageInput.disabled = false;
-  sendButton.disabled = false;
-  say("Connected. Messages are live.");
-}
-function subscribeToMessages() {
-  if (channel) db.removeChannel(channel);
-  channel = db.channel("cuemoo-global-chat")
-    .on("postgres_changes", {event:"INSERT", schema:"public", table:"chat_messages"}, event => addMessage(event.new))
-    .subscribe(state => {
-      if (state === "CHANNEL_ERROR" || state === "TIMED_OUT") say("Live updates disconnected. Refresh to reconnect.", true);
-    });
-}
-async function handleAuth(event) {
-  event.preventDefault();
-  if (!db) return;
-  const playerName = normalizeUsername(usernameInput.value);
-  const password = passwordInput.value;
-  if (!validUsername(playerName)) {
-    say("Username must be 3–20 characters using letters, numbers, or underscores.", true);
-    return;
-  }
-  if (password.length < 8) {
-    say("Password must be at least 8 characters.", true);
-    return;
-  }
-  authSubmit.disabled = true;
-  try {
-    let result;
-    if (authMode === "signup") {
-      result = await db.auth.signUp({
-        email: authEmail(playerName),
-        password,
-        options: {data: {username: playerName}}
-      });
-      if (result.error) throw result.error;
-      if (!result.data.session) {
-        say("Account created. The site owner must turn OFF email confirmation in Supabase Auth settings before username-only sign-in can work.", true);
-        return;
-      }
-      user = result.data.user;
-      username = playerName;
-      passwordInput.value = "";
-      showRoom(username);
-      say("Account created. Welcome!");
-    } else {
-      result = await db.auth.signInWithPassword({email:authEmail(playerName), password});
-      if (result.error) throw result.error;
-      user = result.data.user;
-      const {data:profile, error:profileError} = await db.from("chat_profiles").select("username").eq("id", user.id).single();
-      if (profileError || !profile) throw new Error("Couldn't load your username profile. Ask the site owner to check the SQL setup.");
-      passwordInput.value = "";
-      showRoom(profile.username);
-      say("Logged in. Welcome back!");
-    }
-  } catch (error) {
-    console.error(error);
-    say(authMode === "signup" ? (error.message || "Couldn't create account. That username may already be taken.") : "Login failed. Check your username and password.", true);
-  } finally {
-    authSubmit.disabled = false;
-  }
-}
-async function start() {
-  console.info("CueMoo chat build 2026-11-13-live");
-  if (SUPABASE_URL.includes("PASTE_") || SUPABASE_KEY.includes("PASTE_")) {
-    say("CONFIGURATION ERROR: Supabase URL or publishable key is still a placeholder in the loaded chat build.", true);
-    return;
-  }
-  try {
-    db = createClient(SUPABASE_URL, SUPABASE_KEY);
-    document.querySelectorAll("[data-auth-mode]").forEach(button =>
-      button.addEventListener("click", () => setAuthMode(button.dataset.authMode))
-    );
-    authForm.addEventListener("submit", handleAuth);
-    $("chat-logout").addEventListener("click", async () => {
-      const {error} = await db.auth.signOut();
-      if (error) { say("Couldn't log out. Try again.", true); return; }
-      showAuth();
-      say("You are logged out.");
-    });
-    const {data:{session}, error} = await db.auth.getSession();
-    if (error) throw error;
-    if (session?.user) {
-      user = session.user;
-      const {data:profile, error:profileError} = await db.from("chat_profiles").select("username").eq("id", user.id).single();
-      if (profileError || !profile) {
-        await db.auth.signOut();
-        showAuth();
-        say("Your chat profile wasn't found. Please create a new account or contact the site owner.", true);
-      } else {
-        showRoom(profile.username);
-      }
-    } else {
-      setAuthMode("signup");
-    }
-  } catch (error) {
-    console.error(error);
-    say("Couldn't connect. Check the Supabase URL, public key, and SQL setup.", true);
-  }
-}
-$("chat-form").addEventListener("submit", async event => {
-  event.preventDefault();
-  if (!user || !username) return;
-  const content = messageInput.value.trim();
-  if (!content) return;
-  if (Date.now() - lastSent < 3000) { say("Wait a moment before sending again.", true); return; }
-  lastSent = Date.now();
-  sendButton.disabled = true;
-  const {error} = await db.from("chat_messages").insert({user_id:user.id, username, content});
-  if (error) { say("Message not sent. Please try again.", true); console.error(error); }
-  else { messageInput.value = ""; say("Message sent."); }
-  sendButton.disabled = false;
-});
+import {createClient} from "https://esm.sh/@supabase/supabase-js@2";
+const db=createClient("https://yiapojosvsvsswgrcupk.supabase.co","sb_publishable_FBsP-RmhkkUTl5Wy-bJvAQ_oY-eavez");
+const $=id=>document.getElementById(id),status=$("chat-status"),messages=$("chat-messages");
+let user=null,username="",mode="signup",last=0,seen=new Set(),friends=[],group=null;
+const say=(s,e=false)=>{status.textContent=s;status.classList.toggle("error",e)};
+const el=(tag,cls,txt)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n};
+const btn=(txt,fn)=>{const b=el("button","",txt);b.type="button";b.onclick=fn;return b};
+const email=u=>u+"@accounts.cuemoo.invalid";
+function view(v){document.querySelectorAll(".social-view").forEach(x=>x.classList.add("hidden"));$("view-"+v).classList.remove("hidden");document.querySelectorAll("[data-social]").forEach(x=>x.classList.toggle("active",x.dataset.social===v));if(v==="friends")loadFriends();if(v==="profile")loadProfile();if(v==="groups")loadGroups();if(v==="owner")loadReports()}
+function card(p,actions){const c=el("div","social-person"),d=el("div","",p.display_name||p.username),a=el("div","social-actions");d.append(el("small","","@"+p.username));actions.forEach(x=>a.append(btn(x[0],x[1])));c.append(d,a);return c}
+async function globalLoad(){seen.clear();const {data,error}=await db.from("chat_messages").select("id,user_id,username,content,created_at").order("created_at",{ascending:false}).limit(50);messages.replaceChildren();if(error){say("Could not load global chat.",true);return}data.reverse().forEach(addMsg);if(!messages.children.length)messages.append(el("p","chat-empty","No messages yet."));$("chat-message").disabled=$("chat-send").disabled=false;say("Connected. Messages are live.")}
+function addMsg(m){if(seen.has(m.id))return;seen.add(m.id);const a=el("article","chat-message"),h=el("div","chat-message-top"),n=el("strong","chat-message-name",m.username),t=el("time","",new Date(m.created_at).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}));h.append(n,t);a.append(h,el("div","chat-message-body",m.content));if(m.user_id!==user.id)a.append(btn("Report",async()=>{const {error}=await db.from("chat_reports").insert({message_id:m.id,reporter_id:user.id});say(error?"Report failed.":"Report sent.",!!error)}));messages.append(a);messages.scrollTop=messages.scrollHeight}
+async function enter(profile){username=profile.username;$("chat-current-user").textContent=username;$("chat-auth").classList.add("hidden");$("chat-room").classList.remove("hidden");document.querySelectorAll("[data-social]").forEach(b=>b.onclick=()=>view(b.dataset.social));view("global");globalLoad();db.channel("cuemoo-global").on("postgres_changes",{event:"INSERT",schema:"public",table:"chat_messages"},e=>addMsg(e.new)).subscribe();const {data:p}=await db.from("chat_profiles").select("role").eq("id",user.id).single();if(["owner","moderator"].includes(p?.role))$("owner-tab").classList.remove("hidden")}
+$("chat-auth-form").addEventListener("submit",async e=>{e.preventDefault();const u=$("chat-auth-username").value.trim().toLowerCase(),pw=$("chat-auth-password").value;if(!/^[a-z0-9_]{3,20}$/.test(u)||pw.length<8){say("Use a 3–20 character username and password of at least 8 characters.",true);return}const b=$("chat-auth-submit");b.disabled=true;try{let r=mode==="signup"?await db.auth.signUp({email:email(u),password:pw,options:{data:{username:u}}}):await db.auth.signInWithPassword({email:email(u),password:pw});if(r.error)throw r.error;if(!r.data.session)throw Error("Turn OFF email confirmation in Supabase Auth settings.");user=r.data.user;const {data:p,error}=await db.from("chat_profiles").select("username").eq("id",user.id).single();if(error||!p)throw Error("Profile missing. Check the profile trigger.");$("chat-auth-password").value="";await enter(p);say("Welcome to CueMoo!")}catch(x){say(x.message,true)}finally{b.disabled=false}});
+document.querySelectorAll("[data-auth-mode]").forEach(b=>b.onclick=()=>{mode=b.dataset.authMode;document.querySelectorAll("[data-auth-mode]").forEach(x=>x.classList.toggle("active",x===b));$("chat-auth-submit").textContent=mode==="signup"?"Create account":"Log in"});
+$("chat-logout").onclick=async()=>{await db.auth.signOut();location.reload()};
+$("chat-form").addEventListener("submit",async e=>{e.preventDefault();const content=$("chat-message").value.trim();if(!content)return;if(Date.now()-last<3000){say("Wait a moment.",true);return}last=Date.now();const {error}=await db.from("chat_messages").insert({user_id:user.id,username,content});if(error)say("Message not sent.",true);else{$("chat-message").value="";say("Sent.")}});
+async function loadFriends(){const req=$("friend-requests"),list=$("friend-list");req.replaceChildren();list.replaceChildren();const {data:rs,error}=await db.from("friend_requests").select("*").or("sender_id.eq."+user.id+",receiver_id.eq."+user.id).eq("status","pending");if(error){req.append(el("p","chat-empty","Could not load requests."));return}for(const r of rs){const id=r.sender_id===user.id?r.receiver_id:r.sender_id,{data:p}=await db.from("chat_profiles").select("id,username,display_name").eq("id",id).maybeSingle();if(p)req.append(card(p,r.receiver_id===user.id?[["Accept",()=>respond(r.id,"accepted")],["Decline",()=>respond(r.id,"declined")]]:[["Pending",()=>{}]]))}if(!req.children.length)req.append(el("p","chat-empty","No pending requests."));const {data:rs2}=await db.from("friend_requests").select("sender_id,receiver_id").eq("status","accepted").or("sender_id.eq."+user.id+",receiver_id.eq."+user.id);friends=[];for(const r of rs2||[]){const id=r.sender_id===user.id?r.receiver_id:r.sender_id,{data:p}=await db.from("chat_profiles").select("id,username,display_name").eq("id",id).maybeSingle();if(p&&!friends.some(x=>x.id===id))friends.push(p)}friends.forEach(p=>list.append(card(p,[["DM",()=>{fillDM();$("dm-friend").value=p.id;view("messages");loadDM()}]])));if(!friends.length)list.append(el("p","chat-empty","No friends yet."));fillDM()}
+async function respond(id,statusValue){const {error}=await db.from("friend_requests").update({status:statusValue}).eq("id",id);say(error?"Request update failed.":"Request updated.",!!error);loadFriends()}
+$("friend-search-btn").onclick=async()=>{const q=$("friend-search").value.trim(),box=$("friend-results");box.replaceChildren();if(q.length<3){box.append(el("p","chat-empty","Enter 3 or more characters."));return}const {data,error}=await db.from("chat_profiles").select("id,username,display_name").ilike("username","%"+q+"%").neq("id",user.id).limit(15);if(error){say("Search failed.",true);return}for(const p of data){const {data:old}=await db.from("friend_requests").select("id,status").or("and(sender_id.eq."+user.id+",receiver_id.eq."+p.id+"),and(sender_id.eq."+p.id+",receiver_id.eq."+user.id+")").limit(1).maybeSingle();box.append(card(p,[[old?(old.status==="accepted"?"Friends":"Pending"):"Add friend",async()=>{if(old)return;const {error:e}=await db.from("friend_requests").insert({sender_id:user.id,receiver_id:p.id});say(e?"Could not send request.":"Request sent.",!!e);$("friend-search-btn").click()}]]))}if(!box.children.length)box.append(el("p","chat-empty","No matches."))};
+function fillDM(){const s=$("dm-friend"),v=s.value;s.replaceChildren(new Option("Choose friend",""));friends.forEach(p=>s.add(new Option(p.display_name||p.username,p.id)));s.value=v}
+$("dm-friend").onchange=()=>loadDM();$("dm-refresh").onclick=()=>loadDM();
+async function loadDM(){const id=$("dm-friend").value,box=$("dm-messages");box.replaceChildren();if(!id){$("dm-input").disabled=$("dm-send").disabled=true;return}const {data,error}=await db.from("direct_messages").select("*").or("and(sender_id.eq."+user.id+",receiver_id.eq."+id+"),and(sender_id.eq."+id+",receiver_id.eq."+user.id+")").order("created_at").limit(100);if(error){box.append(el("p","chat-empty","Could not load DMs; confirm friendship is accepted."));return}data.forEach(m=>box.append(el("div","social-bubble",(m.sender_id===user.id?"You: ":"Them: ")+m.content)));$("dm-input").disabled=$("dm-send").disabled=false}
+$("dm-form").onsubmit=async e=>{e.preventDefault();const receiver_id=$("dm-friend").value,content=$("dm-input").value.trim();if(!receiver_id||!content)return;const {error}=await db.from("direct_messages").insert({sender_id:user.id,receiver_id,content});if(error)say("DM failed. Check friendship and policies.",true);else{$("dm-input").value="";loadDM()}};
+async function loadProfile(){const {data,error}=await db.from("chat_profiles").select("display_name,bio,avatar_url").eq("id",user.id).single();if(error){say("Profile load failed.",true);return}$("profile-display").value=data.display_name||username;$("profile-bio").value=data.bio||"";$("profile-avatar").src=data.avatar_url||""}
+$("profile-save").onclick=async()=>{const patch={display_name:$("profile-display").value.trim().slice(0,30)||username,bio:$("profile-bio").value.trim().slice(0,160)},file=$("profile-avatar-file").files[0];if(file){if(!["image/png","image/jpeg","image/webp"].includes(file.type)||file.size>2097152){say("Use PNG/JPG/WEBP under 2 MB.",true);return}const path=user.id+"/avatar-"+Date.now(),{error}=await db.storage.from("cuemoo-avatars").upload(path,file,{contentType:file.type});if(error){say("Avatar upload failed.",true);return}patch.avatar_url=db.storage.from("cuemoo-avatars").getPublicUrl(path).data.publicUrl}const {error}=await db.from("chat_profiles").update(patch).eq("id",user.id);say(error?"Profile save failed; check profile update policy.":"Profile saved.",!!error);loadProfile()};
+async function loadGroups(){const box=$("group-list");box.replaceChildren();const {data:ms,error}=await db.from("chat_group_members").select("group_id").eq("user_id",user.id);if(error){box.append(el("p","chat-empty","Could not load groups."));return}for(const m of ms){const {data:g}=await db.from("chat_groups").select("id,name").eq("id",m.group_id).maybeSingle();if(g)box.append(card({username:g.name,display_name:g.name},[["Open",()=>openGroup(g)]]))}if(!box.children.length)box.append(el("p","chat-empty","No groups yet."))}
+$("group-create").onsubmit=async e=>{e.preventDefault();const name=$("group-name").value.trim(),{data:g,error}=await db.from("chat_groups").insert({name,created_by:user.id}).select("id,name").single();if(error){say("Group creation failed.",true);return}const {error:me}=await db.from("chat_group_members").insert({group_id:g.id,user_id:user.id,member_role:"admin"});if(me){say("Group created but joining failed; check membership policy.",true);return}$("group-name").value="";loadGroups();openGroup(g)};
+async function openGroup(g){group=g;$("group-active").classList.remove("hidden");$("group-title").textContent=g.name;const {data,error}=await db.from("group_messages").select("*").eq("group_id",g.id).order("created_at").limit(100),box=$("group-messages");box.replaceChildren();if(error){box.append(el("p","chat-empty","Could not load group messages."));return}data.forEach(m=>box.append(el("div","social-bubble",(m.sender_id===user.id?"You: ":"Player: ")+m.content)));$("group-input").disabled=$("group-send").disabled=false}
+$("group-form").onsubmit=async e=>{e.preventDefault();const content=$("group-input").value.trim();if(!group||!content)return;const {error}=await db.from("group_messages").insert({group_id:group.id,sender_id:user.id,content});if(error)say("Group message failed.",true);else{$("group-input").value="";openGroup(group)}};
+async function loadReports(){const {data:p}=await db.from("chat_profiles").select("role").eq("id",user.id).single(),box=$("owner-users");box.replaceChildren();if(!["owner","moderator"].includes(p?.role)){box.append(el("p","chat-empty","Owner/moderator access required."));return}const {data,error}=await db.from("chat_reports").select("id,message_id").order("created_at",{ascending:false}).limit(50);if(error){box.append(el("p","chat-empty","Could not load reports."));return}for(const r of data){const {data:m}=await db.from("chat_messages").select("username,content").eq("id",r.message_id).maybeSingle(),row=el("div","social-row",m?m.username+": "+m.content:"Message no longer exists");if(m)row.append(btn("Delete message",async()=>{const {error}=await db.from("chat_messages").delete().eq("id",r.message_id);say(error?"Delete failed.":"Message deleted.",!!error);loadReports()}));row.append(btn("Dismiss",async()=>{const {error}=await db.from("chat_reports").delete().eq("id",r.id);say(error?"Dismiss failed.":"Report dismissed.",!!error);loadReports()}));box.append(row)}if(!box.children.length)box.append(el("p","chat-empty","No reports."))}
+async function start(){const {data:{session},error}=await db.auth.getSession();if(error){say("Supabase connection failed.",true);return}if(session?.user){user=session.user;const {data:p,error}=await db.from("chat_profiles").select("username").eq("id",user.id).single();if(error||!p){say("Profile not found.",true);return}enter(p)}else say("Create an account or log in to join chat.")}
 start();
