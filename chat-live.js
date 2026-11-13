@@ -10,7 +10,7 @@ const email=u=>u+"@accounts.cuemoo.invalid";
 function view(v){document.querySelectorAll(".social-view").forEach(x=>x.classList.add("hidden"));$("view-"+v).classList.remove("hidden");document.querySelectorAll("[data-social]").forEach(x=>x.classList.toggle("active",x.dataset.social===v));if(v==="friends")loadFriends();if(v==="profile")loadProfile();if(v==="owner")loadReports()}
 function card(p,actions){const c=el("div","social-person"),d=el("div","",p.display_name||p.username),a=el("div","social-actions");d.append(el("small","","@"+p.username));actions.forEach(x=>a.append(btn(x[0],x[1])));c.append(d,a);return c}
 async function globalLoad(){if(isBanned)return;seen.clear();const {data,error}=await db.from("chat_messages").select("id,user_id,username,content,created_at").order("created_at",{ascending:false}).limit(50);messages.replaceChildren();if(error){say("Could not load global chat.",true);return}data.reverse().forEach(addMsg);if(!messages.children.length)messages.append(el("p","chat-empty","No messages yet."));$("chat-message").dataset.ready="1";$("chat-send").dataset.ready="1";$("chat-message").disabled=$("chat-send").disabled=isBanned;say("Connected. Messages are live.")}
-function addMsg(m){if(seen.has(m.id))return;seen.add(m.id);const a=el("article","chat-message"),h=el("div","chat-message-top"),n=el("strong","chat-message-name",m.username),t=el("time","",new Date(m.created_at).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}));h.append(n,t);a.append(h,el("div","chat-message-body",m.content));messages.append(a);messages.scrollTop=messages.scrollHeight}
+function addMsg(m){if(seen.has(m.id))return;seen.add(m.id);const a=el("article","chat-message");a.dataset.messageId=m.id;const h=el("div","chat-message-top"),n=el("strong","chat-message-name",m.username),t=el("time","",new Date(m.created_at).toLocaleTimeString([],{hour:"numeric",minute:"2-digit"}));h.append(n,t);a.append(h,el("div","chat-message-body",m.content));messages.append(a);messages.scrollTop=messages.scrollHeight}
 function applyBanState(banned){
  isBanned=!!banned;
  window.cuemooBanned=isBanned;
@@ -32,7 +32,7 @@ async function enter(profile){
  applyBanState(!!p?.is_banned);
  if(!isBanned){
   globalLoad();
-  db.channel("cuemoo-global").on("postgres_changes",{event:"INSERT",schema:"public",table:"chat_messages"},e=>addMsg(e.new)).subscribe();
+  db.channel("cuemoo-global").on("postgres_changes",{event:"INSERT",schema:"public",table:"chat_messages"},e=>addMsg(e.new)).on("postgres_changes",{event:"DELETE",schema:"public",table:"chat_messages"},e=>{const node=messages.querySelector('[data-message-id="'+e.old.id+'"]');if(node)node.remove();if(!messages.children.length)messages.append(el("p","chat-empty","No messages yet."))}).subscribe();
  }
  if(["owner","moderator"].includes(p?.role))$("owner-tab").classList.remove("hidden");$("clear-chat").classList.toggle("hidden",p?.role!=="owner");
  db.channel("cuemoo-own-profile").on("postgres_changes",{event:"UPDATE",schema:"public",table:"chat_profiles",filter:"id=eq."+user.id},e=>applyBanState(!!e.new.is_banned)).subscribe();
