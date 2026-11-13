@@ -1,7 +1,8 @@
 import {createClient} from "https://esm.sh/@supabase/supabase-js@2";
 const db=createClient("https://yiapojosvsvsswgrcupk.supabase.co","sb_publishable_FBsP-RmhkkUTl5Wy-bJvAQ_oY-eavez",{auth:{persistSession:true,autoRefreshToken:true,detectSessionInUrl:false,storageKey:"cuemoo-auth-v1"}});
 const $=id=>document.getElementById(id),status=$("chat-status"),messages=$("chat-messages");
-let user=null,username="",mode="signup",lastGlobal=0,lastDM=0,seen=new Set(),friends=[],isBanned=false;\nwindow.cuemooAccountStatus="checking";
+let user=null,username="",mode="signup",lastGlobal=0,lastDM=0,seen=new Set(),friends=[],isBanned=false;
+window.cuemooAccountStatus="checking";
 const say=(s,e=false)=>{status.textContent=s;status.classList.toggle("error",e)};
 const el=(tag,cls,txt)=>{const n=document.createElement(tag);if(cls)n.className=cls;if(txt!==undefined)n.textContent=txt;return n};
 const btn=(txt,fn)=>{const b=el("button","",txt);b.type="button";b.onclick=fn;return b};
@@ -83,7 +84,8 @@ async function removeFriend(id){
  say(error?"Could not remove friend. Run the updated owner SQL setup.":"Friend removed.",!!error);
  if(!error){$("public-profile").classList.add("hidden");loadFriends()}
 }
-\nasync function loadProfile(){const {data,error}=await db.from("chat_profiles").select("display_name,bio").eq("id",user.id).single();if(error){say("Profile load failed.",true);return}$("profile-display").value=data.display_name||username;$("profile-bio").value=data.bio||""}
+
+async function loadProfile(){const {data,error}=await db.from("chat_profiles").select("display_name,bio").eq("id",user.id).single();if(error){say("Profile load failed.",true);return}$("profile-display").value=data.display_name||username;$("profile-bio").value=data.bio||""}
 $("profile-save").onclick=async()=>{const patch={display_name:$("profile-display").value.trim().slice(0,30)||username,bio:$("profile-bio").value.trim().slice(0,160)};const {error}=await db.from("chat_profiles").update(patch).eq("id",user.id);say(error?"Profile save failed; check profile update policy.":"Profile saved.",!!error);loadProfile()};
 async function loadReports(){
  const {data:p}=await db.from("chat_profiles").select("role").eq("id",user.id).single(),box=$("owner-users");box.replaceChildren();
