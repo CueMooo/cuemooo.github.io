@@ -248,9 +248,15 @@ loadGames();
 document.addEventListener("click", function(event) {
   const play = event.target.closest && event.target.closest(".play-btn");
   if (!play) return;
-  if (window.cuemooAccountStatus === "checking") {
+  if (window.cuemooAccountStatus === "checking" || window.cuemooAccountStatus === "blocked") {
     event.preventDefault();
-    alert("Checking your CueMoo account status. Try again in a moment.");
+    alert("CueMoo needs to verify your account before launching games. Refresh the page or log in.");
+    return;
+  }
+  if (window.cuemooAccountStatus === "guest") {
+    event.preventDefault();
+    event.stopImmediatePropagation();
+    alert("Log in or create a CueMoo account before playing games.");
     return;
   }
   if (window.cuemooBanned === true || window.cuemooAccountStatus === "banned") {
