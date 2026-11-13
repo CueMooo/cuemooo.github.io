@@ -443,3 +443,41 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .public-profile-head small{display:block;margin-top:3px;color:#aaa2b5;font-size:.75rem;font-weight:500}
 .public-profile-bio{padding:10px 12px;border-radius:9px;background:#101017;color:#d4d0dc;font-size:.83rem;white-space:pre-wrap;overflow-wrap:anywhere;min-height:42px}
 .profile-state{font-size:.76rem;color:#c4b8d1}
+
+
+/* CueMoo social polish: consistent controls, tighter navigation and profile panel */
+.social-nav{grid-template-columns:repeat(5,minmax(0,1fr));}
+.social-tab,.social-inline button,.social-list button,.profile-editor button,
+.social-actions button,.public-profile button,.global-chat-tools button{
+  -webkit-appearance:none;appearance:none;font-family:inherit;line-height:1.2;
+}
+.social-actions button,.public-profile button{
+  min-height:36px;padding:8px 12px;border:1px solid var(--primary);
+  border-radius:10px;background:var(--primary);color:#171018;
+  font-size:.76rem;font-weight:800;cursor:pointer;
+}
+.social-actions button:hover,.public-profile button:hover{filter:brightness(1.08);}
+.social-actions button:last-child:not(:first-child){
+  background:#242430;color:#e7e4ed;border-color:#3a3a48;
+}
+.public-profile{margin-top:14px;padding:16px;background:linear-gradient(145deg,#201d29,#121219);border-color:#454052;box-shadow:0 12px 30px #0004;}
+.public-profile-head{font-size:1.08rem;letter-spacing:-.02em;}
+.public-profile-bio{line-height:1.5;}
+.public-profile .social-actions{display:flex;gap:8px;flex-wrap:wrap;}
+.public-profile>button{width:100%;background:#292834;color:#eeeaf4;border-color:#454252;}
+.global-chat-tools{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 10px;}
+.chat-tools-label{font-size:.76rem;font-weight:750;color:#a9a7b5;letter-spacing:.04em;text-transform:uppercase;}
+.global-chat-tools .danger-btn{appearance:none;-webkit-appearance:none;padding:8px 12px;border:1px solid #853746;border-radius:9px;background:#35151e;color:#ffb9c5;font:inherit;font-size:.74rem;font-weight:800;cursor:pointer;}
+.global-chat-tools .danger-btn:hover{background:#4a1b28;border-color:#b64c63;}
+.global-chat-tools .danger-btn:disabled{opacity:.5;cursor:wait;}
+#view-global{display:flex;flex-direction:column;}
+#view-global .chat-messages{width:100%;}
+.social-inline input,.social-inline select,.profile-editor input,.profile-editor textarea{box-shadow:none;}
+button{ -webkit-tap-highlight-color:transparent; }
+@media(max-width:650px){
+ .social-nav{grid-template-columns:repeat(3,minmax(0,1fr));}
+ .social-person,.social-row{align-items:flex-start;}
+ .public-profile{padding:13px;}
+ .public-profile .social-actions button{flex:1;}
+ .global-chat-tools{margin-bottom:8px;}
+}
