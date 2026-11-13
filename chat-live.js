@@ -113,12 +113,12 @@ $("owner-search-btn").addEventListener("click",searchOwnerMembers);
 $("owner-search").addEventListener("keydown",e=>{if(e.key==="Enter"){e.preventDefault();searchOwnerMembers()}});
 async function start(){
  const {data:{session},error}=await db.auth.getSession();
- if(error){window.cuemooAccountStatus="allowed";say("Supabase connection failed.",true);return}
+ if(error){window.cuemooAccountStatus="blocked";say("Supabase connection failed. Sign-in status could not be verified, so games are locked.",true);return}
  if(session?.user){
   user=session.user;
   const {data:p,error}=await db.from("chat_profiles").select("username,is_banned").eq("id",user.id).single();
-  if(error||!p){window.cuemooAccountStatus="allowed";say("Profile not found.",true);return}
+  if(error||!p){window.cuemooAccountStatus="blocked";say("Profile not found. Sign-in status could not be verified, so games are locked.",true);return}
   await enter(p);
- }else{window.cuemooAccountStatus="allowed";window.cuemooBanned=false;say("Create an account or log in to join chat.")}
+ }else{window.cuemooAccountStatus="guest";window.cuemooBanned=false;say("Log in or create an account to use chat and launch games.")}
 }
 start();
