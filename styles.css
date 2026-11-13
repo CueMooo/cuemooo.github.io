@@ -351,3 +351,24 @@ footer {
 .chat-compose input,.chat-compose button{padding:9px 11px;font-size:.82rem}
 .chat-auth{max-width:360px}.chat-auth-tabs button,#chat-auth-form input,#chat-auth-form button{padding:9px 11px;font-size:.84rem}
 .chat-account-note{font-size:.72rem}.chat-status{font-size:.76rem}
+
+
+/* CueMoo social hub */
+.social-nav{display:flex;gap:6px;overflow-x:auto;padding:3px 0 12px;margin-bottom:10px}
+.social-tab,.social-inline button,.social-list button,.profile-editor button{border:1px solid var(--border);background:var(--surface-2);color:var(--text);border-radius:8px;padding:8px 11px;font-size:.78rem;cursor:pointer;white-space:nowrap}
+.social-tab.active,.social-inline button,.profile-editor button{background:var(--primary);color:#111;border-color:var(--primary);font-weight:700}
+.social-view h3{font-size:.9rem;margin:13px 0 8px}
+.social-inline{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap}
+.social-inline input,.social-inline select,.profile-editor input,.profile-editor textarea{min-width:0;flex:1;padding:9px 10px;border:1px solid var(--border);border-radius:8px;background:var(--bg);color:var(--text);font:inherit;font-size:.82rem}
+.social-list{display:grid;gap:7px}
+.social-person,.social-row{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:9px;background:var(--surface-2);border:1px solid var(--border);border-radius:8px;font-size:.82rem}
+.social-person small{display:block;color:var(--text-muted)}
+.social-actions{display:flex;gap:5px;flex-wrap:wrap}
+.social-actions button{padding:6px 8px}
+.social-messages{height:260px;overflow:auto;display:flex;flex-direction:column;gap:7px;padding:9px;background:var(--bg);border:1px solid var(--border);border-radius:9px}
+.social-bubble{padding:8px 10px;border-radius:9px;background:var(--surface-2);font-size:.82rem;overflow-wrap:anywhere}
+.social-bubble small{display:block;color:var(--text-muted);font-size:.68rem}
+.profile-editor{display:grid;gap:10px;max-width:380px}
+.profile-editor label{display:grid;gap:5px;color:var(--text-muted);font-size:.78rem}
+#profile-avatar{width:72px;height:72px;border-radius:50%;object-fit:cover;background:var(--surface-2);border:1px solid var(--border)}
+@media(max-width:600px){.social-nav{margin-right:-4px}.social-tab{padding:7px 9px}.social-inline>*{min-width:0}.social-inline input{width:55%}}
