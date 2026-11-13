@@ -24,9 +24,7 @@
     <section id="games" class="tab-content active">
       <div class="controls">
         <input type="text" id="search" placeholder="Search games..." autocomplete="off">
-        <select id="category-filter">
-          <option value="all">All Games</option>
-        </select>
+        <select id="category-filter"><option value="all">All Games</option></select>
       </div>
       <div id="games-grid" class="games-grid"></div>
       <p id="no-results" class="no-results hidden">No games found.</p>
@@ -35,12 +33,27 @@
     <section id="chat" class="tab-content">
       <div class="chat-card">
         <div class="chat-heading"><div><h2>Global Chat</h2><p>Talk with everyone playing on CueMoos Games.</p></div><span class="chat-live">● LIVE</span></div>
-        <label for="chat-username">Your display name</label>
-        <div class="chat-identity"><input id="chat-username" maxlength="20" placeholder="Choose a username" autocomplete="nickname"><button id="chat-save-name" type="button">Save name</button></div>
-        <p id="chat-status" class="chat-status" role="status">Add your free Supabase settings to connect.</p>
-        <div id="chat-messages" class="chat-messages" aria-live="polite"><p class="chat-empty">Chat is waiting for setup.</p></div>
-        <form id="chat-form" class="chat-compose"><input id="chat-message" maxlength="300" placeholder="Write a message..." autocomplete="off" disabled><button id="chat-send" type="submit" disabled>Send</button></form>
-        <p class="chat-note">Be respectful. Please do not share your real name, location, school, or other personal information.</p>
+        <section id="chat-auth" class="chat-auth">
+          <div class="chat-auth-tabs">
+            <button type="button" class="chat-auth-tab active" data-auth-mode="signup">Create account</button>
+            <button type="button" class="chat-auth-tab" data-auth-mode="login">Log in</button>
+          </div>
+          <form id="chat-auth-form">
+            <label for="chat-auth-username">Username</label>
+            <input id="chat-auth-username" maxlength="20" minlength="3" placeholder="3–20 letters, numbers, or _" autocomplete="username" required>
+            <label for="chat-auth-password">Password</label>
+            <input id="chat-auth-password" type="password" minlength="8" placeholder="At least 8 characters" autocomplete="new-password" required>
+            <button id="chat-auth-submit" type="submit">Create account</button>
+          </form>
+          <p class="chat-account-note">Choose a username that does not reveal your real name, school, or location. Passwords are private. There is no email recovery, so keep your password somewhere safe and never share it.</p>
+        </section>
+        <section id="chat-room" class="hidden">
+          <div class="chat-account-bar"><span>Signed in as <strong id="chat-current-user"></strong></span><button type="button" id="chat-logout">Log out</button></div>
+          <div id="chat-messages" class="chat-messages" aria-live="polite"><p class="chat-empty">Loading messages…</p></div>
+          <form id="chat-form" class="chat-compose"><input id="chat-message" maxlength="300" placeholder="Write a message..." autocomplete="off" disabled><button id="chat-send" type="submit" disabled>Send</button></form>
+        </section>
+        <p id="chat-status" class="chat-status" role="status">Create an account or log in to join the chat.</p>
+        <p class="chat-note">Be respectful. Do not share personal information, passwords, or private details in chat.</p>
       </div>
     </section>
 
@@ -55,62 +68,26 @@
     <section id="settings" class="tab-content">
       <div class="settings-card">
         <h2>Settings</h2>
-
         <div class="setting-block">
-          <h3>Themes</h3>
-          <p class="setting-help">Default Is Rose Pink. Tap a circle to switch.</p>
+          <h3>Themes</h3><p class="setting-help">Default Is Rose Pink. Tap a circle to switch.</p>
           <div id="theme-grid" class="theme-grid"></div>
         </div>
-
         <div class="setting-block">
           <h3>Layout</h3>
-          <div class="setting-row">
-            <span>Card size</span>
-            <div class="chip-row" id="card-size">
-              <button class="chip active" data-size="compact">Compact</button>
-              <button class="chip" data-size="cozy">Cozy</button>
-              <button class="chip" data-size="normal">Normal</button>
-            </div>
-          </div>
-          <div class="setting-row">
-            <span>Show game descriptions</span>
-            <label class="switch">
-              <input type="checkbox" id="toggle-desc" checked>
-              <span class="slider"></span>
-            </label>
-          </div>
+          <div class="setting-row"><span>Card size</span><div class="chip-row" id="card-size"><button class="chip active" data-size="compact">Compact</button><button class="chip" data-size="cozy">Cozy</button><button class="chip" data-size="normal">Normal</button></div></div>
+          <div class="setting-row"><span>Show game descriptions</span><label class="switch"><input type="checkbox" id="toggle-desc" checked><span class="slider"></span></label></div>
         </div>
-
         <div class="setting-block">
           <h3>Play</h3>
-          <div class="setting-row">
-            <span>Open games in a new tab</span>
-            <label class="switch">
-              <input type="checkbox" id="toggle-newtab">
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="setting-row">
-            <span>Less motion</span>
-            <label class="switch">
-              <input type="checkbox" id="toggle-motion">
-              <span class="slider"></span>
-            </label>
-          </div>
+          <div class="setting-row"><span>Open games in a new tab</span><label class="switch"><input type="checkbox" id="toggle-newtab"><span class="slider"></span></label></div>
+          <div class="setting-row"><span>Less motion</span><label class="switch"><input type="checkbox" id="toggle-motion"><span class="slider"></span></label></div>
         </div>
-
-        <div class="setting-block">
-          <button type="button" id="reset-settings" class="reset-btn">Reset settings</button>
-        </div>
+        <div class="setting-block"><button type="button" id="reset-settings" class="reset-btn">Reset settings</button></div>
       </div>
     </section>
   </main>
 
-  <footer>
-    <div class="container">
-      <p>CueMoos Games</p>
-    </div>
-  </footer>
+  <footer><div class="container"><p>CueMoos Games</p></div></footer>
   <script src="script.js"></script>
   <script type="module" src="chat.js"></script>
 </body>
