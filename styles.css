@@ -433,3 +433,13 @@ footer {
 button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--primary);outline-offset:2px}button:disabled{opacity:.48;cursor:not-allowed;transform:none!important}
 .chat-auth{margin:0 auto}.chat-auth-tabs{display:grid;grid-template-columns:1fr 1fr}.chat-auth-tab{padding:11px 10px;border-radius:9px;font-size:.82rem}#chat-auth-form{gap:10px}#chat-auth-form label{font-size:.78rem;font-weight:700;color:#c7c1d0}#chat-auth-form button{min-height:44px;margin-top:5px}
 @media(max-width:620px){.owner-hero{align-items:flex-start;flex-direction:column}.owner-stats strong{font-size:1.2rem}.owner-member,.owner-report{align-items:flex-start;flex-direction:column;width:100%}.owner-member .social-actions,.owner-report .social-actions{justify-content:flex-start;flex-wrap:wrap}.owner-member .social-actions button,.owner-report .social-actions button{flex:1}}
+
+/* Ban notice and public member profiles */
+.ban-banner{display:flex;flex-direction:column;gap:5px;margin:0 0 12px;padding:15px 16px;border:1px solid #8e2636;border-radius:12px;background:linear-gradient(120deg,#3b1019,#211017);color:#ffdce2}
+.ban-banner strong{font-size:1rem;letter-spacing:.12em;color:#ff7187}
+.ban-banner span{font-size:.8rem;color:#f5cbd2}
+.public-profile{margin-top:12px;padding:14px;border:1px solid #393344;border-radius:13px;background:linear-gradient(145deg,#211e2a,#14131b);display:grid;gap:10px}
+.public-profile-head{font-size:1rem;font-weight:850;color:#fff}
+.public-profile-head small{display:block;margin-top:3px;color:#aaa2b5;font-size:.75rem;font-weight:500}
+.public-profile-bio{padding:10px 12px;border-radius:9px;background:#101017;color:#d4d0dc;font-size:.83rem;white-space:pre-wrap;overflow-wrap:anywhere;min-height:42px}
+.profile-state{font-size:.76rem;color:#c4b8d1}
