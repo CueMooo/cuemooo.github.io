@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="rose-pink">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101014">
+  <title>Global Chat — CueMoo</title>
+  <link rel="stylesheet" href="../styles.css?v=20261119-chatpage1">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='18' fill='%23e56b92'/><text x='50' y='68' text-anchor='middle' font-size='52' font-family='system-ui,sans-serif' font-weight='700' fill='white'>C</text></svg>">
+  <style>
+    main.chat-page-main{padding:30px 20px 64px}
+    .chat-page-main>.chat-card{margin:0 auto}
+    .chat-page-nav a{text-decoration:none}
+    .chat-page-nav a.active{color:#fff}
+    .chat-page-footer{padding:22px 0;color:var(--text-muted);text-align:center;border-top:1px solid var(--border)}
+    @media(max-width:650px){main.chat-page-main{padding:18px 10px 40px}.header-content{height:auto;min-height:64px;padding-top:10px;padding-bottom:10px;flex-wrap:wrap}.chat-page-nav{width:100%;justify-content:flex-start}}
+  </style>
+  <script>
+    try {
+      const saved = JSON.parse(localStorage.getItem("cuemoo-settings") || "{}");
+      if (saved.theme) document.documentElement.dataset.theme = saved.theme;
+      if (saved.motion) document.documentElement.dataset.motion = "off";
+    } catch (_) {}
+  </script>
+</head>
+<body>
+  <header>
+    <div class="container header-content">
+      <h1 class="logo">CueMoo</h1>
+      <nav class="chat-page-nav" aria-label="Main navigation">
+        <a class="nav-btn" href="../">Home</a>
+        <a class="nav-btn active" href="./" aria-current="page">Global Chat</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container chat-page-main">
+    <section id="chat" class="tab-content active">
+      <div class="chat-card">
+        <div class="chat-heading"><div><h2>Global Chat</h2><p>Talk with everyone in the CueMoo community.</p></div><span class="chat-live">● LIVE</span></div>
+        <section id="chat-auth" class="chat-auth">
+          <div class="chat-auth-tabs">
+            <button type="button" class="chat-auth-tab active" data-auth-mode="signup" aria-pressed="true">Create account</button>
+            <button type="button" class="chat-auth-tab" data-auth-mode="login" aria-pressed="false">Log in</button>
+          </div>
+          <form id="chat-auth-form">
+            <label for="chat-auth-username">Username</label>
+            <input id="chat-auth-username" maxlength="20" minlength="3" placeholder="3–20 letters, numbers, or _" autocomplete="username" required>
+            <label for="chat-auth-password">Password</label>
+            <input id="chat-auth-password" type="password" minlength="8" placeholder="At least 8 characters" autocomplete="new-password" required>
+            <button id="chat-auth-submit" type="submit">Create account</button>
+          </form>
+          <p class="chat-account-note">Your account stays on the server. If you clear browser data, choose Log in and use the same username and password. Keep your password private.</p>
+        </section>
+
+        <section id="chat-room" class="hidden">
+          <div class="chat-account-bar"><span>Signed in as <strong id="chat-current-user"></strong></span><button type="button" id="chat-logout">Log out</button></div>
+          <div class="social-nav" id="social-nav">
+            <button class="social-tab active" data-social="global">Global</button>
+            <button class="social-tab" data-social="friends">Friends</button>
+            <button class="social-tab" data-social="messages">Messages</button>
+            <button class="social-tab" data-social="profile">Profile</button>
+            <button class="social-tab hidden" id="owner-tab" data-social="owner">Owner</button>
+          </div>
+
+          <section class="social-view" id="view-global">
+            <div id="ban-banner" class="ban-banner hidden" role="alert"><strong>🚫 BANNED</strong><span>This account is banned. You can stay signed in, but chat and messaging are disabled.</span></div>
+            <div class="global-chat-tools"><span class="chat-tools-label">Community chat</span><button type="button" id="clear-chat" class="danger-btn hidden">Clear chat</button></div>
+            <div id="chat-messages" class="chat-messages" aria-live="polite"><p class="chat-empty">Loading messages…</p></div>
+            <form id="chat-form" class="chat-compose"><input id="chat-message" maxlength="300" placeholder="Write a message..." autocomplete="off" disabled><button id="chat-send" type="submit" disabled>Send</button></form>
+          </section>
+
+          <section class="social-view hidden" id="view-friends">
+            <h3>Find players</h3>
+            <div class="social-inline"><input id="friend-search" maxlength="24" placeholder="Search username"><button id="friend-search-btn">Search</button></div>
+            <div id="friend-results" class="social-list"></div>
+            <h3>Friend requests</h3><div id="friend-requests" class="social-list"></div>
+            <h3>Your friends</h3><div id="friend-list" class="social-list"></div>
+            <div id="public-profile" class="public-profile hidden" aria-live="polite"></div>
+          </section>
+
+          <section class="social-view hidden" id="view-messages">
+            <div class="social-inline"><select id="dm-friend"><option value="">Choose a friend</option></select><button id="dm-refresh">Refresh</button></div>
+            <div id="dm-messages" class="social-messages"><p class="chat-empty">Choose a friend to view messages.</p></div>
+            <form id="dm-form" class="chat-compose"><input id="dm-input" maxlength="1000" placeholder="Private message..." disabled><button id="dm-send" type="submit" disabled>Send</button></form>
+          </section>
+
+          <section class="social-view hidden" id="view-profile">
+            <h3>Your profile</h3>
+            <div class="profile-editor">
+              <label>Display name<input id="profile-display" maxlength="30" placeholder="Display name"></label>
+              <label>Bio<textarea id="profile-bio" maxlength="160" rows="3" placeholder="A little about you..."></textarea></label>
+              <button id="profile-save">Save profile</button>
+            </div>
+          </section>
+
+          <section class="social-view hidden" id="view-owner">
+            <div class="owner-hero"><div><span class="owner-kicker">CUEMOO CONTROL CENTER</span><h3>Owner dashboard</h3><p>Manage your community, members and reports.</p></div><span class="owner-crown">★ OWNER</span></div>
+            <div class="owner-stats"><div><strong id="stat-members">—</strong><span>Members</span></div><div><strong id="stat-reports">—</strong><span>Open reports</span></div><div><strong id="stat-messages">—</strong><span>Chat messages</span></div></div>
+            <div class="owner-section"><h4>Member management</h4><div class="social-inline"><input id="owner-search" maxlength="24" placeholder="Find a username"><button id="owner-search-btn">Search</button></div><div id="owner-member-results" class="social-list"></div></div>
+            <div class="owner-section"><h4>Reported messages</h4><div id="owner-users" class="social-list"></div></div>
+          </section>
+        </section>
+        <p id="chat-status" class="chat-status" role="status">Create an account or log in to join the chat.</p>
+        <p class="chat-note">Be respectful. Do not share personal information, passwords, or private details in chat.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="chat-page-footer"><div class="container"><p>CueMoo · Global Chat</p></div></footer>
+  <script type="module" src="../chat-live.js?v=20261119-chatpage1"></script>
+</body>
+</html>
