@@ -20,7 +20,7 @@ const DEFAULTS = {
 let allGames = [];
 let settings = loadSettings();
 
-document.querySelectorAll(".nav-btn").forEach((btn) => {
+document.querySelectorAll(".nav-btn[data-tab]").forEach((btn) => {
   btn.addEventListener("click", () => {
     document.querySelectorAll(".nav-btn").forEach((b) => b.classList.remove("active"));
     document.querySelectorAll(".tab-content").forEach((t) => t.classList.remove("active"));
